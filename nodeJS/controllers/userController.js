@@ -81,7 +81,7 @@ export const addUser = async (req, res) => {
         });
         await newUser.save();
 
-        const partialUser = user.toObject();
+        const partialUser = newUser.toObject();
         delete partialUser.password; 
 
         const token = jwt.sign

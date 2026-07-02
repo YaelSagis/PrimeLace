@@ -17,6 +17,8 @@ import { ProductDetails } from './pages/productDetails';
 import { Collections } from './pages/collections';
 import { Category } from './pages/category';
 import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import { AdminUsers } from './components/admin/users';
+import { AdminRentings } from './components/admin/rentings';
 // import { Admin } from './pages/admin';
 
 const brifdalTheme = createTheme(
@@ -67,7 +69,9 @@ function App()
               <Route path='/collections' element={<Collections />}>
                 <Route path=':id' element={<Category />} />
               </Route>
-              {/* <Route path='/admin' element={<Admin />} /> */}
+
+              <Route path="/admin/users" element={<AdminUsers />} />
+              <Route path="/admin/rentings" element={<AdminRentings />} />
             </Routes>
           </main>
           <Footer />

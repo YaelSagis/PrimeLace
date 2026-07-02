@@ -32,7 +32,7 @@ The content is organized as follows:
 <notes>
 - Some files may have been excluded based on .gitignore rules and Repomix's configuration
 - Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
-- Only files matching these patterns are included: routers
+- Only files matching these patterns are included: models
 - Files matching patterns in .gitignore are excluded
 - Files matching default ignore patterns are excluded
 - Files are sorted by Git change count (files with more changes are at the bottom)
@@ -41,103 +41,134 @@ The content is organized as follows:
 </file_summary>
 
 <directory_structure>
-routers/categoryRouter.js
-routers/dressRouter.js
-routers/paymentRouter.js
-routers/rentingRouter.js
-routers/userRouter.js
+models/category.js
+models/dress.js
+models/payment.js
+models/renting.js
+models/user.js
 </directory_structure>
 
 <files>
 This section contains the contents of the repository's files.
 
-<file path="routers/categoryRouter.js">
-import express from 'express';
-import mongoose from "mongoose"
-import { addCategory, deleteCategory, getAllCategories, getDressesByCategory, updateCategory } from '../controllers/categoryController.js';
+<file path="models/category.js">
+import mongoose from 'mongoose';
 
-const categoryRouter = express.Router();
+const CategoryModel =mongoose.models.category || mongoose.model("Category",
+     new mongoose.Schema(
+    {
+        name: { type: String, required: true, unique: true },
+        image: { type: String, required: true }
+    }
+    ,{collection: "categories"}
+)
+);
 
-categoryRouter.get('/getAllCategories', getAllCategories);
-categoryRouter.get('/getDressesByCategory/:id', getDressesByCategory);
-categoryRouter.post('/addCategory', addCategory);
-categoryRouter.put('/updateCategory/:id', updateCategory);
-categoryRouter.delete('/deleteCategory/:id', deleteCategory);
-
-export default categoryRouter;
+export default CategoryModel;
 </file>
 
-<file path="routers/dressRouter.js">
-import express from "express"
-import mongoose from "mongoose"
-import { getAllDresses, getById, addDress, updateDress, deleteDress } from "../controllers/dressController.js";
-import { verifyAdmin, verifyToken } from "../middlewares/authMiddleware.js";
+<file path="models/dress.js">
+import mongoose from "mongoose";
+const { ObjectId } = mongoose.Schema.Types;
 
-const dressRouter=express.Router();
+const ReviewSchema = new mongoose.Schema(
+{
+    userName: { type: String, required: true },
+    rating: { type: Number, required: true, min: 1, max: 5 },
+    comment: { type: String, required: true },
+    createdAt: { type: Date, default: Date.now }
+});
 
-dressRouter.get('/getAllDresses', getAllDresses);
-dressRouter.get('/getById/:id', getById);
-dressRouter.post('/addDress', verifyToken, verifyAdmin, addDress);
-dressRouter.put('/updateDress/:id', verifyToken, verifyAdmin, updateDress);
-dressRouter.delete('/deleteDress/:id', verifyToken, verifyAdmin, deleteDress);
+const DressModel = mongoose.models.dress || mongoose.model("dress", 
+    new mongoose.Schema(
+    {
+        name:String,
+        size: {type: Number, default: 0},
+        //video
+        image:String,
+        color:String,
+        price: {type: Number, required: true },
+        //description
+        category:{type:ObjectId, ref: 'Category'},
+        status: {type:String, default:"available"},
+        reviews: {type:[ReviewSchema], default:[]},
+    }
+    ,{collection: "dresses"}
+)
+);
 
-export default dressRouter;
+export default DressModel;
 </file>
 
-<file path="routers/paymentRouter.js">
-import express from "express"
-import mongoose from "mongoose"
-import {getAllPayments, getById, addPayment, updatePayment, deletePayment} from "../controllers/paymentController.js"
-import { verifyToken } from "../middlewares/authMiddleware.js";
+<file path="models/payment.js">
+import mongoose from "mongoose";
+const { ObjectId } = mongoose.Schema.Types;
 
-const paymentRouter=express.Router();
+const PaymentModel = mongoose.models.payment || mongoose.model("payment", 
+    new mongoose.Schema(
+    {
+        rentId: {type: ObjectId, required: true},
+        userId: {type: ObjectId, required: true},
+        numOfPayment: { type: Number, required: true },
+        amountPerPayment: { type: Number, required: true },
+        paymentMethod: { type: String, default: "Credit Card" },
+        status: { type: Boolean, default: false, required: true }
+    }
+    ,{collection: "payments"}
+)
+);
 
-paymentRouter.get('/getAllPayments', verifyToken, getAllPayments);
-paymentRouter.get('/getById/:id', verifyToken, getById);
-paymentRouter.post('/addPayment', verifyToken, addPayment);
-paymentRouter.put('/updatePayment/:id', verifyToken, updatePayment);
-paymentRouter.delete('/deletePayment/:id', verifyToken, deletePayment);
-
-export default paymentRouter;
+export default PaymentModel;
 </file>
 
-<file path="routers/rentingRouter.js">
-import express from "express"
-import mongoose from "mongoose"
-import {getAllRentings, getById, addRenting, updateRenting, deleteRenting} from "../controllers/rentingController.js"
-import { verifyAdmin, verifyToken } from "../middlewares/authMiddleware.js";
+<file path="models/renting.js">
+import mongoose from "mongoose";
+const { ObjectId } = mongoose.Schema.Types;
 
-const rentingRouter=express.Router();
+const RentingModel = mongoose.models.renting || mongoose.model("renting", 
+    new mongoose.Schema(
+    {
+        userId: {type:ObjectId, required: true},
+        dressId: {type:ObjectId, required: true},
+        price: {type: Number, required: true},
+        rentDate: { type: Date, required: true },
+        returnDate: { type: Date, required: true },
+        ActualReturnDate: {type:Date, default:null},
+        status: {
+            type:String,
+            enum: ["pending", "active", "confirmed"],
+            default:"active", required: true
+        },
+        payments: [{type:ObjectId, ref: "payment"}],
+        totalAmount: {type:Number, required: true},
+        createdAt: {type: Date, default: Date.now()}
+    }
+)
+);
 
-rentingRouter.get('/getAllRentings', verifyToken, verifyAdmin, getAllRentings);
-rentingRouter.get('/getById/:id', verifyToken, getById);
-rentingRouter.post('/addRenting', verifyToken, addRenting);
-rentingRouter.put('/updateRenting/:id', verifyToken, updateRenting);
-rentingRouter.delete('/deleteRenting/:id', verifyToken, deleteRenting);
-
-export default rentingRouter;
+export default RentingModel;
 </file>
 
-<file path="routers/userRouter.js">
-import express from "express"
-import mongoose from "mongoose"
-import { getMe, logInUser, getAllUsers, getById, addUser, updateUser, deleteUser, addToFavorites, removeFromFavorites, getMyFavorites } from "../controllers/userController.js";
-import { verifyAdmin, verifyToken } from "../middlewares/authMiddleware.js";
+<file path="models/user.js">
+import mongoose from "mongoose";
+const { ObjectId } = mongoose.Schema.Types;
 
-const userRouter=express.Router();
+const UserModel = mongoose.models.user || mongoose.model("user", 
+    new mongoose.Schema(
+    {
+        firstName: {type: String, required: true},
+        lastName: {type: String, required: true},
+        phone:String,
+        email: {type: String, unique: true, required: true},
+        password: {type: String, required: true},
+        userType: {type: String, enum: ["admin", "client"], default: "client" },
+        favorites:[{type: ObjectId, ref: "dress"}]
+    }
+    ,{collection: "users"}
+)
+);
 
-userRouter.get("/getMe", verifyToken, getMe);
-userRouter.post('/logInUser', logInUser);
-userRouter.get('/getAllUsers', verifyToken, verifyAdmin, getAllUsers);
-userRouter.get('/getById/:id', verifyToken, verifyAdmin, getById);
-userRouter.post('/addUser', addUser);
-userRouter.put('/updateUser/:id', verifyToken, updateUser);
-userRouter.delete('/deleteUser/:id', verifyToken, verifyAdmin, deleteUser);
-userRouter.post("/addToFavorites", verifyToken, addToFavorites);
-userRouter.post("/removeFromFavorites", verifyToken, removeFromFavorites);
-userRouter.get("/getMyFavorites", verifyToken, getMyFavorites);
-
-export default userRouter;
+export default UserModel;
 </file>
 
 </files>

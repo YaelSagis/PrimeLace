@@ -6,7 +6,6 @@ export function Footer()
     return(
         <>
         <div className="right">
-            <p>footer!!!!!!!!!!!</p>
         </div>
         <footer dir="rtl">
             <div>
@@ -21,7 +20,6 @@ export function Footer()
                 <nav>
                     <h3>השכרה</h3>
                     <ul>
-                        <li><NavLink to="/how-it-works">איך זה עובד</NavLink></li>
                         <li><NavLink to="/collections">דפדוף בקטלוגים</NavLink></li>
                         <li><NavLink to="/sizing">מידות</NavLink></li>
                     </ul>

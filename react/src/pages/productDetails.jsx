@@ -114,13 +114,6 @@ export function ProductDetails()
         });
     };
 
-    const handleDeleteDress = () =>
-    {
-        dispatch(deleteDressThunk(dressId));
-        alert("השמלה הוסרה בהצלחה");
-        navi("/collections");
-    };
-
     if(status === "loading")
         return <p>טוען את פרטי השמלה</p>
     if(status === "failed" || !dress)
@@ -148,10 +141,7 @@ export function ProductDetails()
                 </button>
                 {isAdmin && 
                 (
-                    <div>
-                        <p>סך הכל השכרות פעילות לשמלה זו: {dress.rentals?.length || 0}</p>
-                        <button onClick={handleDeleteDress}>הסרת שמלה</button>
-                    </div>
+                    <p>סך הכל השכרות פעילות לשמלה זו: {dress.rentals?.length || 0}</p>
                 )}
             </div>
 
