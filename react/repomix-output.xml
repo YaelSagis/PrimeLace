@@ -1,0 +1,839 @@
+This file is a merged representation of a subset of the codebase, containing specifically included files, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Only files matching these patterns are included: src/pages
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+src/pages/about.jsx
+src/pages/admin.jsx
+src/pages/category.jsx
+src/pages/collections.jsx
+src/pages/contact.jsx
+src/pages/home.jsx
+src/pages/logIn.jsx
+src/pages/myFavorites.jsx
+src/pages/orderSuccess.jsx
+src/pages/payment.jsx
+src/pages/productDetails.jsx
+src/pages/signIn.jsx
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="src/pages/about.jsx">
+export function About()
+{
+
+    return (
+        <div className="about-container">
+            <div>
+                <h1>The Story of primeLace</h1>
+                <p>המקום שבו אהבה, עיצוב ותחרה נפגשים</p>
+            </div>
+            
+            <div className="about-content">
+                <section>
+                    <h3>החזון שלנו</h3>
+                    <p>
+                        בסלון הכלות <strong>primeLace</strong>, אנחנו מאמינות שכל כלה ראויה להרגיש 
+                        כמו הגרסה המרהיבה ביותר של עצמה ביום המיוחד שלה. הסלון נולד מתוך תשוקה 
+                        לאופנת עילית, תפירה עילית ותחרות יוקרתיות הנבחרות בקפידה מכל העולם.
+                    </p>
+                </section>
+
+                <section>
+                    <h3>החוויה שלך</h3>
+                    <p>
+                        אנחנו לא רק משכירות שמלות – אנחנו מלוות אותך במסע. החל מרגע בחירת הקולקציה באתר, 
+                        דרך שריון התאריכים המושלמים בלוח השנה ועד לרגע שבו את צועדת אל החופה. 
+                        כל שמלה אצלנו עוברת טיפול, ניקוי יבש קפדני והתאמה אישית כדי שתשבי עלייך בדיוק מירבי.
+                    </p>
+                </section>
+            </div>
+        </div>
+    );
+}
+</file>
+
+<file path="src/pages/admin.jsx">
+export function Admin()
+{
+    return(
+        <>
+        </>
+    )
+}
+</file>
+
+<file path="src/pages/category.jsx">
+import { useDispatch, useSelector } from "react-redux";
+import { DressCard } from "../components/presentation/dressCard";
+import { useEffect } from "react";
+import { getDressesByCategoryThunk } from "../redux/slices/dressesSlice";
+import { useNavigate, useParams } from "react-router-dom";
+
+export function Category()
+{
+    const {categoryId} = useParams();
+    const dispatch = useDispatch();
+    const navi = useNavigate();
+
+    const dresses = useSelector((state) => state.dresses.dresses);
+    const status = useSelector((state) => state.dresses.dressStatus);
+
+    useEffect(()=>
+    {
+        if(categoryId)
+            dispatch(getDressesByCategoryThunk(categoryId));
+    },[categoryId, dispatch]);
+
+    return(
+        <>
+            {
+                status === 'loading'? <p>טוען שמלות...</p>:
+                status === 'succeeded'?
+                    <div>
+                        {dresses && dresses.map((d)=>
+                        (
+                            <DressCard
+                                key={d._id}
+                                dress={d}
+                                func={(id) => navi(`/product/${id}`)}>
+                            </DressCard>
+                        )
+                        )}
+                    </div>
+                :<p>שגיאה בטעינת השמלות</p>
+            }
+        </>
+    )
+}
+</file>
+
+<file path="src/pages/collections.jsx">
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux"
+import { Outlet, useNavigate, useParams } from "react-router-dom";
+import { getAllCategoriesThunk } from "../redux/slices/dressesSlice";
+
+export function Collections()
+{
+    const dispatch = useDispatch();
+    const navi = useNavigate();
+    const {categoryId} = useParams();
+
+    const categories = useSelector((state)=> {return state.dresses.categories});
+    const categoriesStatus = useSelector((state)=> {return state.dresses.categoriesStatus});
+
+    useEffect(()=>
+    {
+        if(categoriesStatus === 'idle')
+            dispatch(getAllCategoriesThunk());
+    }, [categoriesStatus, dispatch]);
+
+    function selectCategory(categoryId)
+    {
+        navi(`/collections/${categoryId}`);
+    }
+
+    return(
+        <div>
+            {!categoryId && 
+            (
+                <>
+                    <h1>הקולקציות שלנו</h1>
+                    <p>בחרי את העונה המושלמת עבורך</p>
+
+                    {
+                        categoriesStatus === 'loading'? <p>טוען קולקציות...</p>:
+                        categoriesStatus === 'succeeded'?
+                        (
+                            <div>
+                                {categories.map((c)=>
+                                    (
+                                        <div key={c._id} onClick={() => { selectCategory(c._id)}}>
+                                            <h2>{c.name}</h2>
+                                            <img src={c.image} alt={c.name} />
+                                        </div>
+                                    )
+                                )}
+                            </div>
+                        ):<p>שגיאה בטעינת הקטגוריות</p>
+                    }
+                </>
+            )}
+            <Outlet/>
+        </div>
+    )
+}
+</file>
+
+<file path="src/pages/contact.jsx">
+import { useState } from "react";
+
+export function Contact() {
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [subject, setSubject] = useState("");
+    const [message, setMessage] = useState("");
+    const [submitted, setSubmitted] = useState(false);
+
+    const handleContactSubmit = (e) => {
+        e.preventDefault();
+        setSubmitted(true);
+        setName("");
+        setEmail("");
+        setSubject("");
+        setMessage("");
+    };
+
+    return (
+        <div className="contact-page">
+            <div className="contact-left-side">
+                <h1>CONTACT PAGE.</h1>
+                <p>מזמינים אותך לסטודיו שלנו</p>
+                
+                <div>
+                    <div>
+                        <span>⚲</span>
+                        <div>
+                            <strong>Address</strong>
+                            <p>רחוב ירמיהו 48, ירושלים</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <span>☏</span>
+                        <div>
+                            <strong>Phone</strong>
+                            <p>+123 655-6330</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <span>✉</span>
+                        <div>
+                            <strong>Email</strong>
+                            <p>primeLace@gmail.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="contact-right-side">
+                {submitted ? (
+                    <div>
+                        <p>ההודעה נמסרה בהצלחה! תודה לך</p>
+                        <button onClick={() => setSubmitted(false)}>Send</button>
+                    </div>
+                ) : (
+                    <form onSubmit={handleContactSubmit}>
+                        <div>
+                            <input 
+                                type="text" 
+                                placeholder="שם" 
+                                value={name} 
+                                onChange={(e) => setName(e.target.value)} 
+                                required 
+                            />
+                            <input 
+                                type="email" 
+                                placeholder="אימייל" 
+                                value={email} 
+                                onChange={(e) => setEmail(e.target.value)} 
+                                required 
+                            />
+                        </div>
+
+                        <input 
+                            type="text" 
+                            placeholder="נושא" 
+                            value={subject}
+                            onChange={(e) => setSubject(e.target.value)}
+                            required 
+                        />
+
+                        <textarea 
+                            placeholder="מסר" 
+                            value={message} 
+                            onChange={(e) => setMessage(e.target.value)} 
+                            rows="4"
+                            required
+                        ></textarea>
+
+                        <button type="submit">Send</button>
+                    </form>
+                )}
+
+                <div className="map-container">
+                    <iframe 
+                        title="studio-location"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3391.1982439120757!2d35.208281724102605!3d31.79234667409057!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1502d6248fe3d5bd%3A0x3bfff2646a812983!2z15nXqNee15nXlNeVIDQ4LCDXmdeo15XXqdec15nXnQ!5e0!3m2!1siw!2sil!4v1782934401218!5m2!1siw!2sil"
+                        width="100%" 
+                        height="100%" 
+                        allowFullScreen="" 
+                        loading="lazy"
+                    ></iframe>
+                </div>
+            </div>
+        </div>
+    );
+}
+</file>
+
+<file path="src/pages/home.jsx">
+import { useNavigate } from "react-router-dom"
+
+export function Home()
+{
+    const navi = useNavigate();
+
+    return(
+        <div className="homepage">
+                <h1>Welcome to primeLace</h1>
+                <h2>מקום שבו חלומות נרקמים לתחרה</h2>
+                <p>מצאי את שמלת הכלה המושלמת שלך מתוך הקולקציות הבלעדיות שלנו</p>
+                <button className="explore-btn" onClick={() => navi("/collections")}>
+                    כניסה לקטלוג הקולקציות ➔
+                </button>
+        </div>
+    )
+}
+</file>
+
+<file path="src/pages/logIn.jsx">
+import { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux";
+import { logInUserThunk } from "../redux/slices/authSlice";
+import { useNavigate } from "react-router-dom";
+
+export function LogIn()
+{
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const dispatch = useDispatch();
+    const navi = useNavigate();
+
+    const authStatus = useSelector((state)=> {return state.auth.status});
+    const isAuthenticated = useSelector((state) => {return state.auth.isAuthenticated});
+
+    useEffect(() =>
+    {
+        if(isAuthenticated)
+        {
+            alert("ברוכה הבאה! התחברת בהצלחה");
+            navi("/");
+        }
+        if(authStatus === "failed")
+        {
+            alert("פרטי ההתחברות שגויים, אנא נסי שנית");
+        }
+    }, [isAuthenticated, authStatus, navi]);
+
+    const submitLogIn = (e)=>
+    {
+        e.preventDefault();
+
+        dispatch(logInUserThunk({email, password}));      
+    };
+
+    return (
+        <div>
+            <h2>התחברות לחשבון שלך</h2>
+            <form onSubmit={submitLogIn}>
+                <div>
+                    <input 
+                        type="email" 
+                        placeholder="אימייל" 
+                        value={email} 
+                        onChange={(e) => { setEmail(e.target.value); }} 
+                        required 
+                    />
+                </div>
+                <div>
+                    <input 
+                        type="password" 
+                        placeholder="סיסמה" 
+                        value={password} 
+                        onChange={(e) => { setPassword(e.target.value); }} 
+                        required 
+                    />
+                </div>           
+                <button type="submit" disabled={authStatus === 'loading'}>התחברי</button>
+            </form>
+        </div>
+    );
+}
+</file>
+
+<file path="src/pages/myFavorites.jsx">
+import { useSelector } from "react-redux";
+
+export function MyFavorites()
+{
+    const currentUser = useSelector((state) => state.auth.currentUser);
+    const allDresses = useSelector((state) => state.dresses.dresses) || [];
+    const userFavoriteIds = currentUser?.favorites || [];
+
+    const myFavoriteDresses = allDresses.filter(dress => 
+        userFavoriteIds.includes(dress._id));
+
+    return(
+        <div>
+            <h2>מועדפים</h2>
+
+            {myFavoriteDresses.length === 0 ?
+            ( <p>עדיין לא שמרת שמלות ... עברי לקטלוג כדי להתחיל לבחור!</p> ) : 
+            (
+                <div>
+                    {myFavoriteDresses.map((d) => 
+                    (
+                        <DressCard key={d._id} dress={d} />
+                    ))}
+                </div>
+            )}
+        </div>
+    )
+}
+</file>
+
+<file path="src/pages/orderSuccess.jsx">
+import { useLocation, useNavigate } from "react-router-dom"
+
+export function OrderSuccess()
+{
+    const location = useLocation();
+    const navi = useNavigate();
+    const {rentingId, rentDate, returnDate} = location.state || {};
+
+    return(
+        <div>
+            <div className="success-card">
+                <h1>THANK YOU FOR YOUR ORDER! 🤍</h1>
+                <p>תהליך ההשכרה הושלם והשמלה מחכה לך!</p>
+
+                {rentingId && 
+                (
+                    <div className="success-details">
+                        <p><strong>מספר הזמנה:</strong> {rentingId}</p>
+                        <p><strong>טווח ההשכרה:</strong> מ-{rentDate} עד {returnDate}</p>
+                    </div>
+                )}
+                <p>תודה שבחרת ב-primeLace</p>
+                <button onClick={() => navi("/")}>
+                     לעמוד הבית
+                </button>
+            </div>
+        </div>
+    )
+}
+</file>
+
+<file path="src/pages/payment.jsx">
+import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom"
+
+export function Payment()
+{
+    const location = useLocation();
+    const navi = useNavigate();
+
+    const {rentingId, dressId, rentDate, returnDate} = location.state || {};
+
+    const [cardName, setCardName] = useState("");
+    const [cardNumber, setCardNumber] = useState("");
+    const [expiry, setExpiry] = useState("");
+    const [cvv, setCvv] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handlePaymentSubmit = (e) =>
+    {
+        e.preventDefault();
+        setIsSubmitting(true);
+
+        setTimeout(() => 
+        {
+            setIsSubmitting(false);
+            navi("/orderSuccess", 
+                {
+                    state: {rentingId, dressId, rentDate, returnDate}
+                }
+            );
+        }, 1500);
+    };
+
+    if(!rentingId)
+    {
+        return(
+            <h2>לא נבחרו פרטי הזמנה</h2>
+        );
+    }
+
+    return(
+        <div>
+            <div className="order-summary">
+                <h2>YOUR ORDER SUMMARY</h2>
+                <h3>תאריך הזמנה</h3>
+                <p>{rentDate} - {returnDate}</p>
+            </div>
+
+            <form onSubmit={handlePaymentSubmit} className="credit-card-form">
+                <h2>PAYMENT METHOD</h2>
+                <p>Credit Card</p>
+                <div>
+                    <input
+                        type="text" 
+                        placeholder="שם בעל הכרטיס" 
+                        value={cardName} 
+                        onChange={(e) => setCardName(e.target.value)} 
+                        required>
+                    </input>
+                </div>
+                <div>
+                    <input
+                        type="text" 
+                        placeholder="מספר כרטיס אשראי" 
+                        maxLength="16"
+                        value={cardNumber} 
+                        onChange={(e) => setCardNumber(e.target.value)} 
+                        required>
+                    </input>
+                </div>
+                <div>
+                    <input
+                        type="text" 
+                        placeholder="תוקף (MM/YY)" 
+                        maxLength="5"
+                        value={expiry} 
+                        onChange={(e) => setExpiry(e.target.value)} 
+                        required >
+                    </input>
+                    <input
+                        type="text"
+                        placeholder="CVV"
+                        maxLength="3"
+                        value={cvv}
+                        onChange={(e) => setCvv(e.target.value)}
+                        required>
+                    </input>
+                </div>
+
+                <button type="submit" disabled={isSubmitting}>אשרי תשלום</button>
+            </form>
+        </div>
+    )
+}
+</file>
+
+<file path="src/pages/productDetails.jsx">
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom"
+import { addReviewThunk, getDressByIdThunk } from "../redux/slices/dressesSlice";
+import Calendar from "react-calendar";
+import 'react-calendar/dist/Calendar.css'
+import { createRenting } from "../API/rentingsApi";
+
+export function ProductDetails()
+{
+    const {dressId} = useParams();
+    const dispatch = useDispatch();
+    const navi = useNavigate();
+
+    const dress = useSelector((state) => { return state.dresses.currentDress; });
+    const status = useSelector((state) => { return state.dresses.status; });
+    const currentUser = useSelector((state) => { return state.auth.currentUser; });
+
+    const isAdmin = currentUser.userType === "admin";
+
+    useEffect(() =>
+    {
+        if(dressId)
+            dispatch(getDressByIdThunk(dressId));
+    }, [dressId, dispatch]);
+
+    const [comment, setComment] = useState("");
+    const [rating, setRating] = useState(5);
+
+    const handleAddReview = (e) =>
+    {
+        e.preventDefault();
+        if(!comment.trim())
+            return;
+
+        const newReview =
+        {
+            dressId: dressId,
+            userName: `${currentUser.firstName} ${currentUser.lastName}`,
+            rating: Number(rating),
+            comment: comment
+        };
+        dispatch(addReviewThunk(newReview));
+        setComment("");
+        setRating(5);
+    }
+
+    const [rentalRange, setRentalRange] = useState([null, null]);
+    const [isSavedTemp, setIsSavedTemp] = useState(false);
+    const [currentRentingId, setCurrentRentingId] = useState(null);
+
+    const isDateBlocked = ((date) =>
+    {
+        if(!dress || !dress.rentals)
+            return false;
+
+        const rentings = dress.rentals;
+        if(!rentings || rentings.length === 0)
+            return false;
+
+         const currentTime = new Date(date).setHours(0,0,0,0);
+
+        return rentings.some(rental =>
+        {
+            const start = new Date(rental.rentDate).setHours(0,0,0,0);
+            const end = new Date(rental.returnDate).setHours(0,0,0,0);
+           
+            return currentTime >= start && currentTime <= end;
+        });
+    });
+
+    const handleSaveTempDates = async () =>
+    {
+        if(!rentalRange[0] || !rentalRange[1])
+        {
+            alert("אנא בחרי טווח תאריכים מלא");
+            return;
+        }
+
+        const tempRentData = 
+        {
+            dressId: dressId,
+            price: dress.price,
+            rentDate: rentalRange[0].toLocaleDateString('en-CA'),
+            returnDate: rentalRange[1].toLocaleDateString('en-CA'),
+            status: "pending",
+            totalAmount: dress.price
+        };
+
+        try{
+            const res = await createRenting(tempRentData);
+
+            setCurrentRentingId(res.rentingId);
+            setIsSavedTemp(true);
+            alert(`השמלה שוריינה בהצלחה מ-${tempRentData.rentDate} עד ${tempRentData.returnDate}!`);
+            alert("התאריכים נשמרו במערכת! כעת תוכלי ללחוץ על 'השכרה' למעלה.");
+        } catch (err)
+        {
+            alert("אופס... התאריך נתפס או שיש שגיאה בתקשורת עם השרת.");
+        }
+    };
+
+    const handleRenting = () =>
+    {
+        navi("/payment", 
+        {
+            state:
+            {
+                rentingId: currentRentingId,
+                dressId: dressId,
+                rentDate: rentalRange[0].toLocaleDateString('en-CA'),
+                returnDate: rentalRange[1].toLocaleDateString('en-CA')
+            }
+        });
+    };
+
+    if(status === "loading")
+        return <p>טוען את פרטי השמלה</p>
+    if(status === "failed" || !dress)
+        return <p>אופס... שגיאה בטעינת השמלה</p>
+
+    return(
+        <>
+        <div className="product-container">
+            <div className="right">
+                <video src={dress.video}></video>
+                <img src={dress.image} alt={dress.userName}></img>
+            </div>
+
+            <div className="left">
+                <h1>{dress.name}</h1>
+                <p>תיאור בד</p>
+                <ul>מידות</ul>
+                <p className="price">₪{dress.price}</p>
+                <button>❤️</button>
+                <button 
+                    onClick={handleRenting}
+                    disabled={!isSavedTemp}
+                >
+                    {isSavedTemp ? "השכרה (התקדמי לתשלום) ➔" : "שרייני תאריכים למטה כדי להשכיר"}
+                </button>
+                {isAdmin && 
+                (
+                    <div>
+                        <button>עריכת שמלה</button>
+                        <button>הסרת שמלה</button>
+                    </div>
+                )}
+            </div>
+
+            <div className="leftButom">          
+                <h3>זמינות שמלה</h3>
+                <div className="calendar">
+                    <Calendar  
+                        onChange={setRentalRange}
+                        value={rentalRange}
+                        minDate={new Date()}
+                        tileDisabled={({date}) => isDateBlocked(date)}
+                        tileClassName={({date}) => isDateBlocked(date)? 'blocked': null}>
+                    </Calendar>
+                </div>
+                <button
+                    onClick={handleSaveTempDates}
+                    disabled={isSavedTemp}
+                >השכרה</button>
+            </div>
+
+            <div className="rightButom">
+                <h3>מה הכלות שלנו אומרות</h3>
+                <form onSubmit={handleAddReview}>
+                    <div>
+                    <label>דירוג</label>
+                        <select value={rating} onChange={(e) => setRating(e.target.value)}>
+                            <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                            <option value="4">⭐⭐⭐⭐ (4)</option>
+                            <option value="3">⭐⭐⭐ (3)</option>
+                            <option value="2">⭐⭐ (2)</option>
+                            <option value="1">⭐ (1)</option>                        
+                        </select>
+                    </div>
+                    <textarea 
+                        placeholder="כתבי לנו את חוות דעתך על השמלה..." 
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                        required
+                    ></textarea>
+                    <button type="submit">שלחי תגובה</button>
+                </form>
+                <ul>
+                    {dress.reviews?.map((r) =>
+                    (
+                        <li key={r._id}>
+                            <p>{r.userName}</p>
+                            <span>{"⭐".repeat(r.rating)}</span>
+                            <p>{r.comment}</p>
+                            {/* <small>{r.createdAt= new Date(r.createdAt)}</small> */}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </div>
+        </>
+    )
+}
+</file>
+
+<file path="src/pages/signIn.jsx">
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { signInUserThunk } from "../redux/slices/authSlice";
+
+export function SignIn()
+{
+    const [firstName, setFirstName]=useState("");
+    const [lastName, setLastName]=useState("");
+    const [phone, setPhone]=useState("");
+    const [email, setEmail]=useState("");
+    const [password, setPassword]=useState("");
+
+    const dispatch = useDispatch();
+    const navi = useNavigate();
+
+    const authStatus = useSelector((state) => state.auth.status);
+    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
+    useEffect(() => 
+    {
+        if(isAuthenticated)
+        {
+            alert("נרשמת והתחברת בהצלחה!");
+            navi("/");
+        }
+        if (authStatus === 'failed')
+        {
+            alert("שגיאה בהרשמה, אנא נסי שנית");
+        }
+    }, [isAuthenticated, authStatus, navi]);
+
+    const submit = async (e)=>
+    {
+        e.preventDefault();
+
+        const newUser=
+        {
+            firstName,
+            lastName,
+            phone,
+            email,
+            password
+        };
+
+        dispatch(signInUserThunk(newUser));
+    }
+
+    return(
+        <>
+        <div>
+            <form onSubmit={submit}>
+                <input type="text" placeholder="שם" value={firstName} onChange={e => setFirstName(e.target.value)} required></input>
+                <input type="text" placeholder="משפחה" value={lastName} onChange={e => setLastName(e.target.value)} required></input>
+                <input type="text" placeholder="טלפון" value={phone} onChange={e => setPhone(e.target.value)} required></input>
+                <input type="email" placeholder="אימייל" value={email} onChange={e => setEmail(e.target.value)} required></input>
+                <input type="password" placeholder="סיסמה" value={password} onChange={e => setPassword(e.target.value)} required></input>
+                <button type="submit" disabled={authStatus === 'loading'}>{authStatus === 'loading' ? "טוען ..." : "הרשמי"}</button>
+            </form>
+        </div>
+        </>
+    )
+}
+</file>
+
+</files>

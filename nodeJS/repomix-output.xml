@@ -1,0 +1,143 @@
+This file is a merged representation of a subset of the codebase, containing specifically included files, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Only files matching these patterns are included: routers
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+routers/categoryRouter.js
+routers/dressRouter.js
+routers/paymentRouter.js
+routers/rentingRouter.js
+routers/userRouter.js
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="routers/categoryRouter.js">
+import express from 'express';
+import mongoose from "mongoose"
+import { addCategory, deleteCategory, getAllCategories, getDressesByCategory, updateCategory } from '../controllers/categoryController.js';
+
+const categoryRouter = express.Router();
+
+categoryRouter.get('/getAllCategories', getAllCategories);
+categoryRouter.get('/getDressesByCategory/:id', getDressesByCategory);
+categoryRouter.post('/addCategory', addCategory);
+categoryRouter.put('/updateCategory/:id', updateCategory);
+categoryRouter.delete('/deleteCategory/:id', deleteCategory);
+
+export default categoryRouter;
+</file>
+
+<file path="routers/dressRouter.js">
+import express from "express"
+import mongoose from "mongoose"
+import { getAllDresses, getById, addDress, updateDress, deleteDress } from "../controllers/dressController.js";
+import { verifyAdmin, verifyToken } from "../middlewares/authMiddleware.js";
+
+const dressRouter=express.Router();
+
+dressRouter.get('/getAllDresses', getAllDresses);
+dressRouter.get('/getById/:id', getById);
+dressRouter.post('/addDress', verifyToken, verifyAdmin, addDress);
+dressRouter.put('/updateDress/:id', verifyToken, verifyAdmin, updateDress);
+dressRouter.delete('/deleteDress/:id', verifyToken, verifyAdmin, deleteDress);
+
+export default dressRouter;
+</file>
+
+<file path="routers/paymentRouter.js">
+import express from "express"
+import mongoose from "mongoose"
+import {getAllPayments, getById, addPayment, updatePayment, deletePayment} from "../controllers/paymentController.js"
+import { verifyToken } from "../middlewares/authMiddleware.js";
+
+const paymentRouter=express.Router();
+
+paymentRouter.get('/getAllPayments', verifyToken, getAllPayments);
+paymentRouter.get('/getById/:id', verifyToken, getById);
+paymentRouter.post('/addPayment', verifyToken, addPayment);
+paymentRouter.put('/updatePayment/:id', verifyToken, updatePayment);
+paymentRouter.delete('/deletePayment/:id', verifyToken, deletePayment);
+
+export default paymentRouter;
+</file>
+
+<file path="routers/rentingRouter.js">
+import express from "express"
+import mongoose from "mongoose"
+import {getAllRentings, getById, addRenting, updateRenting, deleteRenting} from "../controllers/rentingController.js"
+import { verifyAdmin, verifyToken } from "../middlewares/authMiddleware.js";
+
+const rentingRouter=express.Router();
+
+rentingRouter.get('/getAllRentings', verifyToken, verifyAdmin, getAllRentings);
+rentingRouter.get('/getById/:id', verifyToken, getById);
+rentingRouter.post('/addRenting', verifyToken, addRenting);
+rentingRouter.put('/updateRenting/:id', verifyToken, updateRenting);
+rentingRouter.delete('/deleteRenting/:id', verifyToken, deleteRenting);
+
+export default rentingRouter;
+</file>
+
+<file path="routers/userRouter.js">
+import express from "express"
+import mongoose from "mongoose"
+import { getMe, logInUser, getAllUsers, getById, addUser, updateUser, deleteUser, addToFavorites, removeFromFavorites, getMyFavorites } from "../controllers/userController.js";
+import { verifyAdmin, verifyToken } from "../middlewares/authMiddleware.js";
+
+const userRouter=express.Router();
+
+userRouter.get("/getMe", verifyToken, getMe);
+userRouter.post('/logInUser', logInUser);
+userRouter.get('/getAllUsers', verifyToken, verifyAdmin, getAllUsers);
+userRouter.get('/getById/:id', verifyToken, verifyAdmin, getById);
+userRouter.post('/addUser', addUser);
+userRouter.put('/updateUser/:id', verifyToken, updateUser);
+userRouter.delete('/deleteUser/:id', verifyToken, verifyAdmin, deleteUser);
+userRouter.post("/addToFavorites", verifyToken, addToFavorites);
+userRouter.post("/removeFromFavorites", verifyToken, removeFromFavorites);
+userRouter.get("/getMyFavorites", verifyToken, getMyFavorites);
+
+export default userRouter;
+</file>
+
+</files>
