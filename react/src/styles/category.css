@@ -1,0 +1,85 @@
+/* Category Page */
+
+body {
+    background-color: #f5f2ef;    
+    margin: 0;
+    padding: 0;
+}
+
+.category-page-container {
+    padding: 30px 0;
+    background-color: #fcfbf8;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.category-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    text-align: center;
+    color: var(--text-dark);
+    margin-bottom: 40px;
+    letter-spacing: 2px;
+}
+
+.dresses-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 25px;
+    padding: 40px 0;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.dress-item-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.delete-btn {
+    background: transparent;
+    border: 1px solid #b3a595;
+    color: #a39589;
+    padding: 8px 20px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: 0.3s;
+    width: 100%;
+    max-width: none;
+}
+
+.delete-btn:hover {
+    background: #a39589;
+    color: white;
+}
+
+.status-message {
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: #888;
+    padding: 40px;
+}
+
+@media (max-width: 1000px) {
+    .dresses-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        padding: 30px;
+    }
+}
+
+@media (max-width: 600px) {
+    .dresses-grid {
+        grid-template-columns: 1fr;
+        padding: 30px 20px;
+    }
+
+    .dress-card {
+        width: 100%;
+        max-width: 360px;
+    }
+}

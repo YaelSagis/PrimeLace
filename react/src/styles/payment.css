@@ -1,0 +1,140 @@
+/* Payment Page */
+
+.payment-page-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    width: 100%;
+    max-width: none;
+    margin: 60px 0;
+    box-sizing: border-box;
+    padding: 0 40px;
+    direction: ltr;
+    align-items: start;
+}
+
+.order-summary-card {
+    background: #fdfbf8;
+    padding: 40px;
+    border: 1px solid #dcd5cc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.order-summary-card h2 {
+    font-family: 'Playfair Display', serif;
+    color: #2c2520;
+    margin-bottom: 30px;
+}
+
+.summary-dress-img {
+    width: 200px;
+    height: 300px;
+    object-fit: cover;
+    margin-bottom: 25px;
+    border: 1px solid #a68d79;
+    display: block;
+}
+
+.summary-content {
+    direction: rtl;
+    text-align: right;
+    width: 100%;
+    color: #4a423b;
+    line-height: 1.8;
+}
+
+.total-divider {
+    height: 1px;
+    background: #dcd5cc;
+    margin: 15px 0;
+}
+
+.total-amount {
+    font-size: 1.2rem;
+    color: #2c2520;
+    font-weight: bold;
+}
+
+.payment-form {
+    text-align: left;
+    direction: ltr;
+}
+
+.payment-form h2 {
+    font-family: 'Playfair Display', serif;
+    color: #2c2520;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.payment-form h3 {
+    font-size: 1.1rem;
+    color: #2c2520;
+    margin: 20px 0 15px;
+    border-bottom: 1px solid #dcd5cc;
+    padding-bottom: 5px;
+}
+
+.form-input, .form-select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #dcd5cc;
+    background: #fff;
+    direction: rtl;
+    text-align: right;
+    box-sizing: border-box;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 16px;
+    background-color: #a68d79;
+    color: white;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 25px;
+    transition: background 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #8f7d6b;
+}
+
+.payment-method-card {
+    margin-bottom: 20px;
+}
+
+.payment-method-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #2c2520;
+    font-weight: 600;
+}
+
+.payment-method-note {
+    color: #6b7280;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+}
+
+.paypal-section {
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .payment-page-container {
+        grid-template-columns: 1fr;
+    }
+}

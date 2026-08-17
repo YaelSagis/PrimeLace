@@ -1,0 +1,29 @@
+.auth-modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+.modal-content {
+    background: #fdfbf8;
+    padding: 40px;
+    border: 1px solid #dcd5cc;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.modal-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.modal-actions button {
+    padding: 10px 20px;
+    background: #a68d79;
+    color: white;
+    border: none;
+    cursor: pointer;
+}

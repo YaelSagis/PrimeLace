@@ -1,0 +1,86 @@
+/* Dress Card */
+.dress-card {
+    background: #ffffff;
+    border: 1px solid #dcd7d1;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    max-width: none;
+    min-height: 480px;
+    padding: 10px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.dress-card:hover {
+    border-color: #a39589;
+    box-shadow: 0 10px 15px rgba(0,0,0,0.08);
+}
+
+.dress-img-container {
+    width: 100%;
+    aspect-ratio: 800 / 1200;
+    overflow: hidden;
+    margin-bottom: 10px;
+    background-color: #fcfbf8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dress-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.dress-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: #2c2a26;
+    margin: 10px 0;
+    /* ביטול ברירת המחדל של יישור לשמאל */
+    align-self: center; 
+}
+
+.card-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* מיישר את הכפתור והלב למרכז הכרטיס */
+    gap: 12px;
+    margin-top: auto;
+    width: 100%;
+}
+
+.card-content-area {
+    margin-top: auto;
+    width: 100%;
+    padding-bottom: 5px;
+}
+
+.view-details-btn {
+    background: #a39589;
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    width: 100%;
+    transition: background 0.3s;
+}
+
+.view-details-btn:hover {
+    background: #8e8075;
+}
+
+.heart-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}

@@ -1,0 +1,118 @@
+/* Collections Page */
+
+.collections-container {
+    background-color: var(--page-bg);
+    padding: 60px 40px;
+    min-height: 80vh;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.collections-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.collections-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.collections-subtitle {
+    font-size: 1.1rem;
+    color: #888;
+    letter-spacing: 1px;
+    margin-top: 0;
+}
+
+/* Grid Layout */
+.collections-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 40px;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.collection-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+
+.collection-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(169, 154, 141, 0.15);
+}
+
+.collection-card img {
+    width: 100%;
+    aspect-ratio: 2 / 3; 
+    object-fit: cover;
+    border-radius: 2px;
+    margin-bottom: 20px;
+    background-color: #fcfbf8;
+}
+
+.collection-card h2 {
+    font-family: 'Playfair Display', serif;
+    color: var(--text-dark);
+    font-size: 1.4rem;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+
+.collection-btn {
+    background-color: var(--button-taupe);
+    color: white;
+    border: none;
+    padding: 14px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: auto;
+}
+
+.collection-btn:hover {
+    background-color: var(--button-taupe-hover);
+    letter-spacing: 2px;
+}
+
+.collections-status-msg {
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: #888;
+    padding: 40px;
+    font-size: 1.2rem;
+}
+
+.collections-status-msg.error {
+    color: #a68d79;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .collections-grid { 
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 25px; 
+    }
+}
+
+@media (max-width: 600px) {
+    .collections-grid { grid-template-columns: 1fr; }
+    .collections-header h1 { font-size: 2.2rem; }
+}

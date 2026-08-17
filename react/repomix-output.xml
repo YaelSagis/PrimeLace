@@ -1,0 +1,237 @@
+This file is a merged representation of a subset of the codebase, containing specifically included files, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Only files matching these patterns are included: src/pages/category.jsx, src/pages/collections.jsx
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+src/
+  pages/
+    category.jsx
+    collections.jsx
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="src/pages/category.jsx">
+import { useDispatch, useSelector } from "react-redux";
+import { DressCard } from "../components/presentation/dressCard";
+import { useEffect, useState } from "react";
+import { addDressThunk, deleteDressThunk, getDressesByCategoryThunk } from "../redux/slices/dressesSlice";
+import { useNavigate, useParams } from "react-router-dom";
+import "../styles/category.css";
+import { uploadImagesToCloudinary } from "../API/dressesApi";
+
+export function Category()
+{
+    const {categoryId} = useParams();
+    const dispatch = useDispatch();
+    const navi = useNavigate();
+
+    const dresses = useSelector((state) => state.dresses.dresses);
+    const status = useSelector((state) => state.dresses.dressStatus);
+
+    const currentUser = useSelector((state) => state.auth?.currentUser);
+    const isAdmin = currentUser && currentUser.userType === 'admin';
+
+    const [name, setName] = useState("");
+    const [color, setColor] = useState("");
+    const [price, setPrice] = useState("");
+
+    const [selectedFiles, setSelectedFiles] = useState([]);
+
+    useEffect(()=>
+    {
+        if(categoryId)
+            dispatch(getDressesByCategoryThunk(categoryId));
+    },[categoryId, dispatch]);
+
+    const handleAddDress = async (e)=>
+    {
+        e.preventDefault();
+
+        const uploadedUrls = await uploadImagesToCloudinary(selectedFiles)
+
+        const newDress = {
+            name,
+            color,
+            price: Number(price),
+            images: uploadedUrls,
+            category: categoryId
+        };
+
+        dispatch(addDressThunk(newDress));
+        
+        setName("");
+        setColor("");
+        setPrice("");
+        setSelectedFiles([])
+    }
+
+    const handleDeleteDress = (id) =>
+    {
+        dispatch(deleteDressThunk(id));
+    }
+
+    return (
+        <div className="category-page-container">
+            <h1 className="category-title">Lace Dresses</h1>
+            {isAdmin && (
+                <div className="admin-card">
+                    <h3>הוספת שמלה חדשה לקטגוריה</h3>
+                    <form onSubmit={handleAddDress} className="admin-form">
+                        <div className="form-group">
+                            <label>שם השמלה</label>
+                            <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
+                        </div>
+                        <div className="form-group">
+                            <label>צבע</label>
+                            <input type="text" value={color} onChange={(e) => setColor(e.target.value)} />
+                        </div>
+                        <div className="form-group">
+                            <label>מחיר השכרה</label>
+                            <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} required />
+                        </div>
+                        <div className="form-group">
+                            <label>תמונות השמלה</label>
+                            <div className="file-upload-wrapper">
+                                <input 
+                                    type="file" 
+                                    multiple 
+                                    onChange={(e) => setSelectedFiles(Array.from(e.target.files))} 
+                                />
+                                <div className="file-upload-design">
+                                    <span className="upload-icon">✦</span>
+                                    <span>{selectedFiles.length > 0 ? `נבחרו ${selectedFiles.length} תמונות` : "לחצי להעלאת תמונות מהמחשב"}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" className="btn-submit">הוסף שמלה</button>
+                    </form>
+                </div>
+            )}
+
+            {status === 'loading' ? (
+                <div className="status-message loading">טוען שמלות...</div>
+            ) : status === 'failed' ? (
+                <div className="status-message error">שגיאה בטעינת השמלות</div>
+            ) : dresses && dresses.length === 0 ? (
+                <div className="status-message empty">אין עדיין שמלות בקטגוריה זו</div>
+            ) : (
+                <div className="dresses-grid">
+                    {dresses.map((d) => (
+                        <div key={d._id} className="dress-item-wrapper">
+                            <DressCard dress={d} func={(id) => navi(`/productDetails/${id}`)} />
+                            {isAdmin && (
+                                <button className="delete-btn" onClick={() => handleDeleteDress(d._id)}>
+                                    מחק שמלה
+                                </button>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    )
+}
+</file>
+
+<file path="src/pages/collections.jsx">
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux"
+import { Outlet, useNavigate, useParams } from "react-router-dom";
+import { getAllCategoriesThunk } from "../redux/slices/categoriesSlice";
+import "../styles/collections.css";
+
+export function Collections()
+{
+    const dispatch = useDispatch();
+    const navi = useNavigate();
+    const {categoryId} = useParams();
+
+    const categories = useSelector((state)=> {return state.categories.categories});
+    const categoriesStatus = useSelector((state)=> {return state.categories.status});
+
+    useEffect(()=>
+    {
+        if(categoriesStatus === 'idle')
+            dispatch(getAllCategoriesThunk());
+    }, [categoriesStatus, dispatch]);
+
+    function selectCategory(categoryId)
+    {
+        navi(`/collections/${categoryId}`);
+    }
+
+    return(
+        <div className="collections-container">
+            {!categoryId && (
+                <>
+                    <div className="collections-header">
+                        <h1>הקולקציות שלנו</h1>
+                        <p className="collections-subtitle">בחרי את העונה המושלמת עבורך</p>
+                    </div>
+
+                    {categoriesStatus === 'loading' ? (
+                        <div className="collections-status-msg">טוען קולקציות...</div>
+                    ) : categoriesStatus === 'succeeded' ? (
+                        <div className="collections-grid">
+                            {categories.map((c) => (
+                                <div className="collection-card" key={c._id}>
+                                    <img src={c.image} alt={c.name} />
+                                    <h2>{c.name}</h2>
+                                    <button className="collection-btn" onClick={() => selectCategory(c._id)}>
+                                        צפי בקולקציה
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="collections-status-msg error">שגיאה בטעינת הקטגוריות</div>
+                    )}
+                </>
+            )}
+            <Outlet/>
+        </div>
+    )
+}
+</file>
+
+</files>

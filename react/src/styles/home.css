@@ -1,0 +1,735 @@
+.homepage {
+    background-color: #FAF8F5;
+    width: 100%;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    color: #2C2520;
+    font-family: 'Playfair Display', 'Assistant', 'Segoe UI', serif;
+    overflow-x: hidden;
+}
+
+/* -----------------------------------------
+   0. Loading State
+-------------------------------------------- */
+.home-loading {
+    text-align: center;
+    padding: 120px 20px;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    color: #A99A8D;
+    background-color: #FAF8F5;
+}
+
+/* -----------------------------------------
+   1. Quick Admin Panel
+-------------------------------------------- */
+.admin-inline-panel {
+    background: #FFFFFF;
+    border-bottom: 1px solid #EAE4DC;
+    padding: 16px 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.admin-inline-panel h3 {
+    font-size: 0.9rem;
+    margin: 0;
+    color: #8C7E72;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.admin-panel-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.admin-panel-buttons button {
+    background: #FAF8F5;
+    border: 1px solid #D8CFB9;
+    color: #2C2520;
+    padding: 8px 18px;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.admin-panel-buttons button:hover {
+    background: #A99A8D;
+    color: #FFFFFF;
+    border-color: #A99A8D;
+}
+
+/* -----------------------------------------
+   2. Hero Video Banner
+-------------------------------------------- */
+.homepage .hero-video-section {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0 !important;
+    height: 100vh;
+    min-height: 600px;
+    overflow: hidden;
+    background-color: #1A1816;
+}
+
+.hero-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(1) contrast(1.02);
+    transition: filter 0.4s ease;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    text-align: center;
+    background: transparent;
+    color: #FFFFFF;
+    margin: 0;
+    padding: 0 20px 80px 20px;
+    box-sizing: border-box;
+    z-index: 2;
+    gap: 40px;
+}
+
+.hero-overlay h1 {
+    font-size: clamp(2.2rem, 5vw, 5rem);
+    font-family: 'Playfair Display', serif;
+    font-weight: 300;
+    letter-spacing: clamp(3px, 1.5vw, 8px);
+    margin: 0;
+    line-height: 1.15;
+    text-shadow: 0 4px 25px rgba(0, 0, 0, 0.6);
+    text-transform: uppercase;
+}
+
+.hero-overlay .explore-btn {
+    padding: 14px 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    color: #FFFFFF;
+    cursor: pointer;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    font-weight: 600;
+    text-transform: uppercase;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.hero-overlay .explore-btn:hover {
+    background: #FFFFFF;
+    color: #1A1816;
+    border-color: #FFFFFF;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(255, 255, 255, 0.25);
+}
+
+.hero-overlay .explore-btn:hover ~ .hero-video,
+.hero-video-section:has(.explore-btn:hover) .hero-video {
+    filter: brightness(0.55) contrast(1.1);
+}
+
+/* -----------------------------------------
+   עיצוב חוצץ הוינטג' החדש – גודל קבוע, חדות מקסימלית
+-------------------------------------------- */
+.section-lace-divider {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 50px 0; 
+    box-sizing: border-box;
+    background-color: #fff; /* משתלב ברקע של האזור */
+    border-bottom: 1px solid #EAE3D9;
+}
+
+.vintage-divider-img {
+    display: block;
+    width: auto;
+    max-width: 1000px;
+    height: 40px;
+    object-fit: contain;
+    margin: 0 auto;
+    
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    
+    /* למקרה שזה לא נראה טוב במסכים מסוימים, נוודא שהתמונה לא נחתכת */
+    overflow: visible;
+}
+
+.section-lace-divider::before,
+.section-lace-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #C5B5A4, #D4AF37, #C5B5A4, transparent);
+}
+
+.section-lace-divider span {
+    padding: 0 20px;
+    color: #B89C7D;
+    font-size: 1rem;
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 4px;
+}
+
+/* -----------------------------------------
+   3. Magazine Hero (Editorial Split Section - Full Image Uncut)
+-------------------------------------------- */
+.homepage .magazine-hero {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: transparent;
+    background-color: #F4F1EA;
+    padding: 60px 8% 90px 8%; /* מרווח עליון מתון שמאפשר לחוצץ לשבת בדיוק באמצע */
+    box-sizing: border-box;
+    align-items: center;
+    gap: 40px;
+    border-bottom: 1px solid #EAE3D9;
+}
+
+.magazine-hero .hero-text-side {
+    display: flex;
+    font-size: 1.35rem;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 20px;
+}
+
+.hero-badge {
+    display: inline-block;
+    font-size: 0.95rem;
+    letter-spacing: 6px;
+    color: #9E8B7A;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    position: relative;
+}
+
+.hero-badge::after {
+    content: "";
+    display: block;
+    width: 35px;
+    height: 1px;
+    background-color: #C5B5A4;
+    margin-top: 8px;
+}
+
+.magazine-hero .hero-text-side h1 {
+    font-size: clamp(3.2rem, 5.5vw, 5rem);
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    color: #ac9856;
+    margin: 0 0 20px 0;
+    line-height: 1.25;
+    letter-spacing: 3px;
+}
+
+.magazine-hero .hero-text-side p {
+    font-size: 1.45rem;
+    color: #5A524A;
+    margin: 0 0 35px 0;
+    line-height: 1.9;
+    max-width: 480px;
+}
+
+.magazine-hero .hero-text-side .explore-btn {
+    padding: 14px 36px;
+    background: transparent;
+    border: 1px solid #2C2520;
+    color: #2C2520;
+    cursor: pointer;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    transition: all 0.35s ease;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.magazine-hero .hero-text-side .explore-btn:hover {
+    background: #2C2C2C;
+    color: #FFFFFF;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(44, 44, 44, 0.15);
+}
+
+.hero-image-side {
+    width: 100%;
+    max-width: 550px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-color: #fff;
+    border: 1px solid #EAE3D9;
+    position: relative;
+    aspect-ratio: 3 / 4;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+.hero-main-img {
+    display: block;
+    width: 100%;
+    max-width: 80%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px #D4AF37, 0 15px 35px rgba(44, 37, 32, 0.08);
+    padding: 25px;
+    background-color: transparent;
+}
+
+.hero-image-side:hover .hero-main-img {
+    transform: scale(1.02);
+}
+
+/* -----------------------------------------
+   4. Featured Stories Section (Structured & Clean Grid)
+-------------------------------------------- */
+.popular-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 70px 8% !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+}
+
+.section-divider {
+    text-align: center;
+    margin: 20px 0 45px 0;
+}
+
+.section-divider h2 {
+    font-size: 1.6rem;
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 5px;
+    font-weight: 400;
+    color: #2C2520;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.small-line {
+    width: 40px;
+    height: 1px;
+    background-color: #A99A8D;
+    margin: 15px auto 0 auto;
+}
+
+/* שורת הסרטונים */
+.vertical-videos-section {
+    width: 100% !important;
+    max-width: 1600px !important;
+
+.video-card {
+    width: 100%;
+    max-width: 100% !important;
+
+    overflow: hidden;
+    border-radius: 4px;
+    border: 1px solid #EAE3D9;
+    background-color: #1A1816;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    position: relative;
+    transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.video-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 35px rgba(0, 0, 0, 0.08);
+    border-color: #D4AF37;
+}
+
+.video-card video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.video-card:hover video {
+    transform: scale(1.03);
+}
+
+/* -----------------------------------------
+   5. Brand Quote Section
+-------------------------------------------- */
+.brand-quote-section {
+    padding: 110px 20px;
+    text-align: center;
+    background-color: #F4EFEA;
+    border-top: 1px solid #EAE3D9;
+    border-bottom: 1px solid #EAE3D9;
+    margin: 60px 0;
+}
+
+.quote-content {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.quote-mark {
+    font-size: 3rem;
+    color: #B89C7D;
+    font-family: 'Playfair Display', serif;
+    display: block;
+    line-height: 0.6;
+    margin-bottom: 20px;
+}
+
+.quote-content p {
+    font-size: 1.7rem;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: #2C2520;
+    line-height: 1.6;
+    margin: 0 0 20px 0;
+    font-weight: 400;
+}
+
+.quote-author {
+    font-size: 1.0rem;
+    letter-spacing: 5px;
+    color: #8C7E72;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* -----------------------------------------
+   New Editorial Collection Showcase (Replacing Carousel)
+-------------------------------------------- */
+.editorial-collections-section {
+    width: 100%;
+    /* ביטול Padding בצדדים כדי מאפשר לתמונות להתקרב עד לקצוות המסך */
+    padding: 90px 0; 
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 120px;
+}
+
+/* שורה בודדת: יישור תחתון (flex-end) שמנמיך את הטקסט והכפתור */
+.collection-row {
+    display: flex;
+    align-items: flex-end; /* מוריד את הטקסט והלחצן לחלק התחתון של התמונות */
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 4%; /* מרווח קטן מאוד מקצה המסך כדי שהתמונה תיגע כמעט בקצה */
+    box-sizing: border-box;
+}
+
+/* שורה זוגית: הופכת את הכיוון (זיג-זג) */
+.collection-row.reverse {
+    flex-direction: row-reverse;
+}
+
+/* שלשת התמונות האנכיות והארוכות */
+.trio-images-wrapper {
+    display: flex;
+    gap: 16px;
+    width: 72%;
+}
+
+.trio-img-card {
+    flex: 1;
+    aspect-ratio: 9 / 16;
+    max-height: 650px;
+    overflow: hidden;
+    background-color: #FAF8F5;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.trio-img-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.trio-img-card:hover img {
+    transform: scale(1.03);
+}
+
+/* גוש הטקסט והלחצן - מונמכים ויושבים בתחתית */
+.row-text-side {
+    width: 24%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: right;
+    gap: 18px;
+    margin-bottom: 35px;
+}
+
+.row-text-side h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    font-weight: 400;
+    letter-spacing: 2px;
+    margin: 0;
+    color: #2C2520;
+    text-transform: uppercase;
+    line-height: 1.2;
+}
+
+.row-text-side .discover-btn {
+    background: transparent;
+    border: 1px solid #2C2520;
+    color: #2C2520;
+    padding: 14px 32px;
+    font-size: 0.65rem;
+    font-family: 'Assistant', 'Segoe UI', sans-serif;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.row-text-side .discover-btn:hover {
+    background: #2C2520;
+    color: #FFFFFF;
+    border-color: #2C2520;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(44, 37, 32, 0.15);
+}
+
+/* -----------------------------------------
+   7. Brand Values Section
+-------------------------------------------- */
+.brand-values-section {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 60px 8%;
+    background-color: transparent;
+    border-top: 1px solid #EAE3D9;
+    border-bottom: 1px solid #EAE3D9;
+    margin: 30px 0;
+    box-sizing: border-box;
+}
+
+.value-item {
+    text-align: center;
+    flex: 1;
+    padding: 0 20px;
+}
+
+.value-item h4 {
+    font-size: 0.9rem;
+    letter-spacing: 4px;
+    color: #2C2520;
+    margin: 0 0 8px 0;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.value-item p {
+    font-size: 0.85rem;
+    color: #6C6259;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.value-divider-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, transparent, #D5C8B8, transparent);
+}
+
+/* -----------------------------------------
+   8. Cinematic Salon Video
+-------------------------------------------- */
+.cinematic-video-section {
+    position: relative;
+    width: 100vw;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    height: 550px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    overflow: hidden;
+    background-color: #1A1816;
+}
+
+.cinematic-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cinematic-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(20, 18, 16, 0.2);
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* -----------------------------------------
+   9. Editorial CTA Footer Button
+-------------------------------------------- */
+.home-cta-footer {
+    text-align: center;
+    padding: 30px 0 70px 0;
+    background-color: #FAF8F5;
+}
+
+.editorial-cta-btn {
+    background: transparent;
+    border: none;
+    color: #8C7E72;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.35s ease;
+    font-family: 'Playfair Display', serif;
+}
+
+.editorial-cta-btn:hover {
+    color: #2C2C2C;
+    transform: translateX(-6px);
+}
+
+/* -----------------------------------------
+   Responsive Breakpoints
+-------------------------------------------- */
+@media (max-width: 991px) {
+    .homepage .hero-video-section {
+        height: 65vh;
+        min-height: 450px;
+    }
+
+    .homepage .magazine-hero {
+        grid-template-columns: 1fr;
+        padding: 40px 6%;
+        gap: 35px;
+    }
+
+    .magazine-hero .hero-text-side {
+        padding-left: 0;
+        align-items: center;
+        text-align: center;
+    }
+
+    .magazine-hero .hero-image-side {
+        width: 100%;
+        max-width: 320px;
+        margin: 0 auto;
+        padding: 10px;
+    }
+
+    .magazine-hero .hero-main-img {
+        width: 100%;
+        max-width: 100%;
+        padding: 10px;
+    }
+
+    .hero-main-img {
+        max-width: 320px;
+    }
+
+    .vertical-videos-section {
+        grid-template-columns: 1fr;
+        padding: 0 20px;
+        gap: 20px;
+    }
+    
+    .video-card {
+        width: 75%;
+        max-width: 280px;
+        height: auto;
+        aspect-ratio: 9 / 16;
+        margin: 0 auto;
+    }
+
+    .brand-values-section {
+        flex-direction: column;
+        gap: 25px;
+        padding: 45px 6%;
+    }
+
+    .value-divider-line {
+        width: 50px;
+        height: 1px;
+        background: #D5C8B8;
+    }
+
+    .editorial-collections-section {
+        padding: 50px 4%;
+        gap: 70px;
+    }
+
+    .collection-row, 
+    .collection-row.reverse {
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .trio-images-wrapper, 
+    .row-text-side {
+        width: 100%;
+    }
+
+    .row-text-side {
+        align-items: center;
+        text-align: center;
+    }
+
+    .trio-images-wrapper {
+        width: 100%;
+        display: flex;
+        gap: 6px;
+    }
+
+    .trio-img-card {
+        max-height: 380px;
+        min-width: 0;
+    }
+
+    .cinematic-video-section {
+        height: 320px;
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+}

@@ -1,0 +1,109 @@
+.page-title {
+    font-family: 'Playfair Display', serif;
+    color: #2c2a26;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.rentings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+    gap: 25px;
+}
+
+.renting-card {
+    background: #ffffff;
+    border: 1px solid #d8cec4;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.renting-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 20%;
+}
+
+.renting-dress-image {
+    width: 120px;
+    height: 180px;
+    gap: 5px;
+    object-fit: contain;
+    background: #f8f6f3;
+    border: 1px solid #e0dcd5;
+    flex-shrink: 0;
+}
+
+.renting-main-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 5px;
+}
+
+.renting-main-info h3 {
+    margin: 0;
+    font-size: 21px;
+    font-weight: 700;
+    color: #2c2a26;
+}
+
+.renting-dress-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 27px;
+    font-weight: 700;
+    color: #2c2a26;
+    margin: 0;
+}
+
+.renting-details p {
+    display: flex;
+    justify-content: space-between;
+    margin: 7px 0;
+    color: #555;
+}
+
+.renting-footer {
+    margin-top: 5px;
+    padding-top: 15px;
+    border-top: 1px solid #e0dcd5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 5px 15px;
+    background: #f7f2ea;
+    border: 1px solid #b3a08c;
+    color: #8f7865;
+    font-size: 0.8rem;
+}
+
+.highlight {
+    color: #b3a08c !important;
+    font-weight: bold;
+}
+
+@media (max-width: 600px) {
+
+    .rentings-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .renting-top {
+        gap: 12px;
+    }
+
+    .renting-dress-image {
+        width: 90px;
+        height: 135px;
+    }
+
+    .renting-dress-name {
+        font-size: 17px;
+    }
+}

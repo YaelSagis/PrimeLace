@@ -1,0 +1,731 @@
+This file is a merged representation of a subset of the codebase, containing specifically included files, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Only files matching these patterns are included: controllers
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+controllers/categoryController.js
+controllers/dressController.js
+controllers/paymentController.js
+controllers/rentingController.js
+controllers/userController.js
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="controllers/categoryController.js">
+import express from "express"
+import mongoose from "mongoose"
+import CategoryModel from "../models/category.js"
+import DressModel from "../models/dress.js";
+
+export const getAllCategories = async (req, res) => {
+    try {
+        const categories = await CategoryModel.find();
+        return res.status(200).json(categories);
+    } 
+    catch (err) {
+        return res.status(500).json(err);
+    }
+};
+
+export const getDressesByCategory=async(req, res)=>
+{
+    const id = req.params.id;
+    try
+    {
+        if(id)
+        { 
+            const dresses=await DressModel.find({category: id});
+            res.status(200).json(dresses)
+        }
+    }
+    catch(err)
+    {
+        res.status(500).json(err)
+    }
+};
+
+export const addCategory = async (req, res) => {
+    const { name, image } = req.body;
+    try {
+        const newCategory = new CategoryModel({
+            name: name,
+            image: image 
+        });
+        await newCategory.save();
+        res.status(200).json(newCategory);
+    } 
+    catch (err) {
+        return res.status(500).json(err);
+    }
+};
+
+export const updateCategory = async (req, res) => {
+    const { id } = req.params;
+    const { name, image } = req.body;
+    try {
+        const updatedCategory = await CategoryModel.findById(id);
+        if (!updatedCategory)
+            return res.status(404).json({ message: "category not found!" });
+
+        updatedCategory.name = name;
+        updatedCategory.image = image;
+        await updatedCategory.save();
+        res.status(200).json("updated");
+        }
+    catch (err) {
+        res.status(500).json(err);
+    };
+};
+
+export const deleteCategory = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const dressCount = await DressModel.countDocuments({ category: id });
+        
+        if (dressCount > 0) {
+            return res.status(400).json({ message: "לא ניתן למחוק את הקטגוריה כיוון שקיימות בה שמלות"});
+        }
+        
+        const deletedCategory = await CategoryModel.findByIdAndDelete(id);
+        if (!deletedCategory) {
+            return res.status(404).json("הקטגוריה לא נמצאה");
+        }
+        return res.status(200).json("הקטגוריה נמחקה בהצלחה");
+    }
+     catch (err) {
+        return res.status(500).json(err);
+    }
+};
+</file>
+
+<file path="controllers/dressController.js">
+import express from "express"
+import mongoose from "mongoose"
+import DressModel from "../models/dress.js"
+import RentingModel from "../models/renting.js";
+
+export const getAllDresses=async(req, res)=>
+{
+    try
+    {
+        const dresses=await DressModel.find()
+        res.status(200).json(dresses)
+    }
+    catch(err)
+    {
+        res.status(500).json(err)
+    }
+};
+
+export const getById=async(req, res)=>
+{
+    try
+    {
+        const id=req.params.id
+        const dress=await DressModel.findById(id)
+        if(!dress)
+            return res.status(404).json("dress not found!");
+
+        res.status(200).json(dress)
+    }
+    catch(err)
+    {
+        res.status(500).json(err)
+    }
+}
+
+export const addDress=async(req, res)=>
+{
+    const {name, size, image, color, price, category, status}=req.body;
+    try
+    {
+        const newDress=new DressModel(
+            {
+                name:name,
+                size:size,
+                image:image,
+                color:color,
+                price:price,
+                category:category,
+                status:status
+            }
+        )
+        await newDress.save()
+        res.status(200).json("added")
+    }
+    catch(err)
+    {
+        res.status(500).json(err)
+    };
+}
+
+/*   {
+        "name": "דגם בוהו-שיק",
+        "size": 40,
+        "image": "boho_glam.jpg",
+        "color": "שמנת",
+        "price": 6000,
+        "category": "שיפון",
+        "status": "available"
+    }
+*/
+
+export const updateDress=async(req, res)=>
+{
+    const id=req.params.id;
+    const {name, size, image, color, price, category, status}=req.body;
+    try
+    {
+        let updateD=await DressModel.findById(id)
+        if(!updateD)
+            return res.status(404).json({message:"dress not found!"})
+        updateD.name=name
+        updateD.size=size
+        updateD.image=image
+        updateD.color=color
+        updateD.price=price
+        updateD.category=category
+        updateD.status=status
+        await updateD.save()
+        res.status(200).json("updated")
+    }
+    catch(err)
+    {
+        res.status(500).json(err)
+    };
+}
+
+export const deleteDress=async(req, res)=>
+{
+    const id=req.params.id;
+    try
+    {
+        await DressModel.findByIdAndDelete(id)
+        res.status(200).json("deleted")
+    }
+    catch(err)
+    {
+        res.status(500).json(err)
+    };
+}
+</file>
+
+<file path="controllers/paymentController.js">
+import express from "express"
+import mongoose from "mongoose";
+import PaymentModel from "../models/payment.js"
+import RentingModel from "../models/renting.js";
+
+export const getAllPayments=async(req, res)=>
+{
+    try
+    {
+        const payments=await PaymentModel.find()
+        res.status(200).json(payments)
+    }
+    catch(err)
+    {
+        res.status(500).json(err)
+    }
+};
+
+export const getById=async(req, res)=>
+{
+    try
+    {
+        const id=req.params.id
+        const payment=await PaymentModel.findById(id)
+        res.status(200).json(payment)
+    }
+    catch(err)
+    {
+        res.status(500).json(err)
+    }
+}
+
+export const addPayments = async (req, res) => 
+{
+    const { rentId, numPayments, totalAmount, paymentMethod } = req.body;
+
+    const userId = req.user?._id || req.user?.id;
+    
+    if (!userId) {
+        return res.status(401).json({ message: "משתמש לא מחובר או Token לא תקין" });
+    }
+
+    if (!numPayments || numPayments < 1 || numPayments > 4) {
+        return res.status(400).json({ message: "מספר התשלומים מוגבל ל-1 עד 4"});
+    }
+
+    try 
+    {
+        const amountPerPayment = Math.round((totalAmount / numPayments) * 100) / 100;
+        const paymentsIds = [];
+
+        for (let i = 0; i < numPayments; i++) {
+            const newPayment = new PaymentModel({
+                rentId: rentId,
+                userId: userId,
+                numOfPayment: i + 1,
+                amountPerPayment: amountPerPayment,
+                paymentMethod: paymentMethod,
+                status: true 
+            });
+            
+            const savedPayment = await newPayment.save();
+            paymentsIds.push(savedPayment._id);
+        }
+
+        await RentingModel.findByIdAndUpdate(rentId, {
+            $set: { status: "paid" },
+            $push: { payments: { $each: paymentsIds } }
+        });
+
+        res.status(200).json("added");
+    } 
+    catch (err) {
+        console.error("שגיאה בעיבוד התשלומים בשרת:", err);
+        res.status(500).json(err);
+    }
+};
+
+/*  {
+    "rentId": "69e136b6d62e2f9c9e9caf8c",
+    "userId": "69e1366ad62e2f9c9e9caf8b",
+    "numOfPayment": 2,
+    "amountPerPayment": 2500,
+    "paymentMethod": "Cash",
+    "status": true
+}
+*/
+
+export const updatePayment=async(req, res)=>
+{
+    const id=req.params.id;
+    const {rentId, numOfPayment, amountPerPayment, paymentMethod, status}=req.body;
+    const userId = req.user._id;
+    try
+    {
+        let updateP=await PaymentModel.findById(id)
+        if(!updateP)
+            return res.status(404).json({message:"payment not found!"})
+        updateP.rentId=rentId
+        updateP.userId=userId
+        updateP.numOfPayment=numOfPayment
+        updateP.amountPerPayment=amountPerPayment
+        updateP.paymentMethod=paymentMethod
+        updateP.status=status
+        await updateP.save()
+        res.status(200).json("updated")
+    }
+    catch(err)
+    {
+        res.status(500).json(err)
+    };
+}
+
+export const deletePayment=async(req, res)=>
+{
+    const id=req.params.id;
+    try
+    {
+        await PaymentModel.findByIdAndDelete(id)
+        res.status(200).json("deleted")
+    }
+    catch(err)
+    {
+        res.status(500).json(err)
+    };
+}
+</file>
+
+<file path="controllers/rentingController.js">
+import express from "express"
+import mongoose from "mongoose";
+import RentingModel from "../models/renting.js"
+import PaymentModel from "../models/payment.js";
+
+export const getAllRentings=async(req, res)=>
+{
+    try
+    {
+        const rentings=await RentingModel.find()
+        res.status(200).json(rentings)
+    }
+    catch(err)
+    {
+        res.status(500).json(err)
+    }
+};
+
+export const getById=async(req, res)=>
+{
+    try
+    {
+        const id=req.params.id
+        const renting=await RentingModel.findById(id)
+        res.status(200).json(renting)
+    }
+    catch(err)
+    {
+        res.status(500).json(err)
+    }
+}
+
+export const addRenting = async (req, res) =>
+{
+    const { dressId, price, rentDate, returnDate, status, totalAmount } = req.body;
+    const userId = req.user._id;
+
+    try {
+        const newRenting = new RentingModel({
+            userId: userId,
+            dressId: dressId,
+            price: price,
+            rentDate: rentDate,
+            returnDate: returnDate,
+            ActualReturnDate: null,
+            status: status,
+            totalAmount: totalAmount,
+            payments: []
+        });
+
+        await newRenting.save();
+
+        res.status(200).json({ 
+            rentingId: newRenting._id,
+            message: "השריון הזמני נוצר בהצלחה!"
+        });
+
+    } catch (err) {
+        console.error("שגיאה ביצירת שריון זמני:", err);
+        res.status(500).json({ message: "שגיאה פנימית בשרת", error: err.message });
+    }
+};
+
+/*  {
+    "rentId": "69e136b6d62e2f9c9e9caf8c",
+    "userId": "69e1366ad62e2f9c9e9caf8b",
+    "numOfPayment": 2,
+    "amountPerPayment": 2500,
+    "paymentMethod": "Cash",
+    "status": true
+}
+*/
+
+/*export const updateRenting=async(req, res)=>
+{
+    const id=req.params.id;
+    const {dressId, price, rentDate, returnDate, ActualReturnDate, status, totalAmount}=req.body;
+    const userId = req.user.id;
+    try
+    {
+        let updateR=await RentingModel.findById(id)
+        if(!updateR)
+            return res.status(404).json({message:"renting not found!"})
+        updateR.userId=userId
+        updateR.dressId=dressId
+        updateR.price=price
+        updateR.rentDate=rentDate
+        updateR.returnDate=returnDate
+        updateR.ActualReturnDate=ActualReturnDate
+        updateR.status=status
+        updateR.totalAmount=totalAmount
+        await updateR.save()
+        res.status(200).json("updated")
+    }
+    catch(err)
+    {
+        res.status(500).json(err)
+    };
+}*/
+
+export const updateRenting = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        let updateR = await RentingModel.findById(id);
+        
+        if (!updateR) {
+            return res.status(404).json({ message: "ההשכרה לא נמצאה." });
+        }
+
+        updateR.status = "active";
+        await updateR.save();
+
+        res.status(200).json("confirmed");
+    } 
+    catch (err) {
+        res.status(500).json(err);
+    }
+};
+
+export const deleteRenting=async(req, res)=>
+{
+    const id=req.params.id;
+    try
+    {
+        await RentingModel.findByIdAndDelete(id)
+        res.status(200).json("deleted")
+    }
+    catch(err)
+    {
+        res.status(500).json(err)
+    };
+}
+
+import { isAvailable } from "../services/rentingService.js";
+
+export const getAvailability = async (req, res) => {
+    try {
+        const { dressId, startDate, endDate } = req.body;
+
+        if (!dressId || !startDate || !endDate) {
+            return res.status(400).json("not found");
+        }
+
+        const isAvailableRes = await isAvailable(dressId, startDate, endDate);
+        
+        res.status(200).json({ available: isAvailableRes });
+    } 
+    catch (err) {
+        res.status(500).json({err});
+    }
+};
+</file>
+
+<file path="controllers/userController.js">
+import express from "express"
+import mongoose from "mongoose";
+import jwt from "jsonwebtoken"; 
+import UserModel from "../models/user.js"
+
+const secret="Y;Nul5Dd$Ly9uMSwH@3Mql";
+
+export const getMe = async (req, res) => {
+    try {
+        const user = await UserModel.findById(req.user._id).select("-password");
+        res.status(200).json(user);
+    }
+    catch (error) {
+        res.status(500).json("שגיאה בטעינת המשתמש" );
+    }
+};
+
+export const logInUser = async (req, res) => {
+    try {
+        const {email, password}=req.body;
+        const user = await UserModel.findOne({email:email});
+        if(!user)
+            return res.status(404).json({message: "המשתמש לא נמצא במערכת"});
+        if(user.password !== password)
+            return res.status(401).json({message: "הסיסמה שגויה"});
+
+        const partialUser = user.toObject();
+        delete partialUser.password; 
+
+        const token = jwt.sign
+        (
+            {_id: user._id, userType: user.userType},
+            secret,
+            {expiresIn: "7d"}
+        );
+
+        res.status(200).json({
+            user: partialUser,
+            token: token
+        }); 
+    }
+    catch (err) {
+        res.status(500).json(err);
+    }
+}
+
+export const getAllUsers = async (req, res) => {
+    try {
+        const users = await UserModel.find();
+        res.status(200).json(users);
+    }
+    catch (err) {
+        res.status(500).json(err);
+    }
+};
+
+export const getById = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const user = await UserModel.findById(id).select("-password");
+        if (!user)
+            return res.status(404).json({ message: "user not found!" });
+        res.status(200).json(user);
+    }
+    catch (err) {
+        res.status(500).json(err);
+    }
+};
+
+export const addUser = async (req, res) => {
+    const { firstName, lastName, phone, email, address, password } = req.body;
+    try {
+        const normalizedEmail = email ? email.toLowerCase() : "";
+
+        const newUser = new UserModel({
+            firstName: firstName,
+            lastName: lastName,
+            phone: phone,
+            email: email,
+            address: address,
+            password: password,
+            userType: (normalizedEmail === "y0583225545@gmail.com" && password === "654321") ? "admin":"client"
+        });
+        await newUser.save();
+
+        const partialUser = newUser.toObject();
+        delete partialUser.password; 
+
+        const token = jwt.sign
+        (
+            {_id: newUser._id, userType: newUser.userType},
+            secret,
+            {expiresIn: "7d"}
+        );
+
+        res.status(200).json({
+            user: partialUser,
+            token: token
+        }); 
+    }
+    catch (err) {
+        res.status(500).json({ message: "שגיאה ברישום המשתמש", error: err.message });
+    };
+}
+
+/*
+{
+    "firstName": "שרה",
+    "lastName": "כהן",
+    "phone": "050-1234567",
+    "email": "sara@gmail.com",
+    "address": "רחוב ר' עקיבא 5, בני ברק",
+    "password": "123"
+}
+*/
+
+export const updateUser = async (req, res) => {
+    const userId = req.user._id;
+    const { firstName, lastName, phone, email, address, password } = req.body;
+    try {
+        let updateU = await UserModel.findById(userId);
+        if (!updateU)
+            return res.status(404).json({ message: "user not found!" });
+
+        updateU.firstName = firstName;
+        updateU.lastName = lastName;
+        updateU.phone = phone;
+        updateU.email = email;
+        updateU.address = address;
+        updateU.password = password;
+
+        await updateU.save();
+        res.status(200).json("updated");
+    }
+    catch (err) {
+        res.status(500).json(err);
+    };
+}
+
+export const deleteUser = async (req, res) => {
+    const userId = req.user._id;
+    try {
+        await UserModel.findByIdAndDelete(userId);
+        res.status(200).json("deleted");
+    }
+    catch (err) {
+        res.status(500).json(err);
+    };
+}
+
+export const addToFavorites = async (req, res) => {
+    const {dressId}=req.body;
+    const userId=req.user._id;
+
+    try{
+        await UserModel.findByIdAndUpdate(userId,
+            {$addToSet: { favorites: dressId }}
+        );
+        res.status(200).json("השמלה הוספה למועדפים");
+    }
+    catch (err) {
+        res.status(500).json({ message: "שגיאה בהוספה למועדפים", error: err.message });
+    }
+}
+
+export const removeFromFavorites = async (req, res) => {
+    const {dressId} = req.body;
+    const userId = req.user._id;
+
+    try {
+        await UserModel.findByIdAndUpdate(userId,
+            {$pull: { favorites: dressId }}
+        );
+        res.status(200).json("השמלה הוסרה מהמועדפים");
+    } 
+    catch (err) {
+        res.status(500).json("שגיאה בהסרה מהמועדפים", err);
+    }
+};
+
+export const getMyFavorites = async (req, res) => {
+    const userId = req.user._id;
+
+    try {
+        const user = await UserModel.findById(userId).populate("favorites");
+        res.status(200).json(user.favorites);
+    }
+    catch (err) {
+        res.status(500).json("שגיאה בשליפת שמלות מועדפות", err);
+    }
+};
+</file>
+
+</files>

@@ -1,0 +1,57 @@
+.success-page-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 60px 20px;
+    background-color: #fcfbf8;
+}
+
+.success-card {
+    background: #ffffff;
+    border: 1px solid #e8e3de;
+    padding: 60px;
+    max-width: 500px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.success-dress-img {
+    width: 200px;
+    height: 300px;
+    object-fit: cover;
+    margin-bottom: 30px;
+    border: 1px solid #eee;
+}
+
+.success-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: #2c2520;
+    margin-bottom: 15px;
+}
+
+.success-subtitle {
+    color: #4a423b;
+    margin-bottom: 30px;
+}
+
+.success-details {
+    margin: 30px 0;
+    line-height: 2;
+    color: #4a423b;
+}
+
+.brand-note {
+    margin: 30px 0;
+    color: #a68d79;
+}
+
+.home-btn {
+    width: 100%;
+    padding: 15px;
+    background-color: #a68d79;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    text-transform: uppercase;
+}
