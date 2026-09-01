@@ -18,12 +18,49 @@
 }
 
 .slider-container {
-    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 12px;
     width: 100%;
     max-width: none;
 }
 
-.slider-container button {
+.thumbnail-strip {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-shrink: 0;
+    /* תמיד בדיוק 3 תמונות - כל אחת שליש גובה (flex:1 על .thumbnail-img),
+       כך שהעמודה כולה תמיד תואמת בדיוק לגובה התמונה הגדולה לצידה */
+}
+
+.thumbnail-img {
+    width: 140px;
+    flex: 1;
+    min-height: 0;
+    object-fit: cover;
+    display: block;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.25s ease;
+}
+
+.thumbnail-img:hover {
+    opacity: 0.8;
+}
+
+.thumbnail-img.active {
+    opacity: 1;
+}
+
+.main-image-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+}
+
+.main-image-wrapper button {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -36,9 +73,9 @@
     transition: background 0.3s;
 }
 
-.slider-container button:first-child { left: 10px; }
-.slider-container button:last-child { right: 10px; }
-.slider-container button:hover { background: rgba(255, 255, 255, 0.6); }
+.main-image-wrapper button:first-child { left: 10px; }
+.main-image-wrapper button:last-child { right: 10px; }
+.main-image-wrapper button:hover { background: rgba(255, 255, 255, 0.6); }
 
 .main-display-image {
     width: 100%;
@@ -52,6 +89,108 @@
     width: 100%;
     max-width: none;
     box-sizing: border-box;
+}
+
+.reviews-section h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: #2c2520;
+    margin: 30px 0 18px 0;
+}
+
+.reviews-section form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 22px;
+    background-color: #fcfbf8;
+    border: 1px solid #e8e3de;
+    margin-bottom: 30px;
+}
+
+.reviews-section form label {
+    font-size: 0.9rem;
+    color: #4a423b;
+}
+
+.rating-selector {
+    display: flex;
+    gap: 6px;
+}
+
+.rating-selector img {
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+.rating-selector img:hover {
+    transform: scale(1.15);
+}
+
+.reviews-section textarea {
+    width: 100%;
+    min-height: 90px;
+    padding: 12px 14px;
+    border: 1px solid #dcd5cc;
+    background: #ffffff;
+    font-family: inherit;
+    font-size: 0.95rem;
+    resize: vertical;
+    box-sizing: border-box;
+    border-radius: var(--radius-input, 10px);
+}
+
+.reviews-section textarea:focus {
+    outline: none;
+    border-color: #a68d79;
+}
+
+.reviews-section form button[type="submit"] {
+    align-self: flex-start;
+    padding: 12px 28px;
+    background-color: #a68d79;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease;
+}
+
+.reviews-section form button[type="submit"]:hover {
+    background-color: #8f7d6b;
+}
+
+.reviews-section > ul {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.reviews-section > ul > li {
+    padding: 16px 20px;
+    border: 1px solid #eee8e2;
+    background-color: #ffffff;
+}
+
+.reviews-section > ul > li > p:first-child {
+    font-weight: 600;
+    color: #2c2520;
+    margin: 0 0 6px 0;
+}
+
+.reviews-section > ul > li .star-icon {
+    width: 16px !important;
+    height: 16px !important;
+}
+
+.reviews-section > ul > li small {
+    color: #999;
+    font-size: 0.8rem;
 }
 
 .left-column {
@@ -268,6 +407,21 @@ h2 {
     .slider-container,
     .reviews-section {
         max-width: 100%;
+    }
+
+    .slider-container {
+        flex-direction: column-reverse;
+    }
+
+    .thumbnail-strip {
+        flex-direction: row;
+        overflow-x: auto;
+    }
+
+    .thumbnail-img {
+        flex: none;
+        width: 60px;
+        height: 75px;
     }
 
     .main-display-image {

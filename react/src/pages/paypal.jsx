@@ -12,7 +12,8 @@ export function PayPalPage() {
 
     const handleSuccess = (data) => {
         setPaymentMessage(`התשלום הושלם בהצלחה עבור ${data.dressName}.`);
-        navigate('/orderSuccess', window.scrollTo(0, 0),{
+        window.scrollTo(0, 0);
+        navigate('/orderSuccess', {
             state: {
                 rentingId: data.orderId,
                 dressImage: location.state?.dressImage || '',

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { signInUserThunk } from "../redux/slices/authSlice";
+import { useToast } from "../components/presentation/toast";
 import "../styles/signIn.css";
 
 export function SignIn() {
@@ -10,18 +11,23 @@ export function SignIn() {
     const [phone, setPhone] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const dispatch = useDispatch();
     const navi = useNavigate();
+    const { showToast } = useToast();
 
     const submit = async (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
         try {
             await dispatch(signInUserThunk({ firstName, lastName, phone, email, password })).unwrap();
-            alert("נרשמת והתחברת בהצלחה!");
+            showToast("נרשמת והתחברת בהצלחה!", "success");
             navi("/");
         } catch (err) {
-            alert("שגיאה בהרשמה, אנא נסי שנית");
+            showToast("שגיאה בהרשמה, אנא נסי שנית", "error");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -38,7 +44,9 @@ export function SignIn() {
                     <input type="email" placeholder="דואר אלקטרוני" value={email} onChange={e => setEmail(e.target.value)} required className="auth-input" />
                     <input type="password" placeholder="סיסמה" value={password} onChange={e => setPassword(e.target.value)} required className="auth-input" />
                     
-                    <button type="submit" className="register-btn">REGISTER</button>
+                    <button type="submit" className="register-btn" disabled={isSubmitting}>
+                        {isSubmitting ? "נרשמת..." : "REGISTER"}
+                    </button>
                 </form>
                 
                 <p className="login-link">Already have an account? <span onClick={() => navi("/login")}>Log In</span></p>

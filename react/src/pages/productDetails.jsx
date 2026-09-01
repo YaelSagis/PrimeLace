@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
@@ -8,6 +8,8 @@ import { addReviewThunk, getDressByIdThunk } from "../redux/slices/dressesSlice"
 import { createRenting } from "../API/rentingsApi";
 import { addToFavoritesThunk, removeFromFavoritesThunk } from "../redux/slices/authSlice";
 import { format } from "date-fns";
+import { useToast } from "../components/presentation/toast";
+import { getOptimizedImageUrl } from "../utils/cloudinaryImage";
 import "../styles/productDetails.css";
 
 
@@ -16,9 +18,11 @@ export function ProductDetails()
     const { dressId } = useParams();
     const dispatch = useDispatch();
     const navi = useNavigate();
+    const location = useLocation();
+    const { showToast } = useToast();
 
     const dress = useSelector((state) => state.dresses.currentDress);
-    const status = useSelector((state) => state.dresses.dressStatus);
+    const status = useSelector((state) => state.dresses.status);
     const currentUser = useSelector((state) => state.auth.currentUser);
 
     const isAdmin = currentUser?.userType === "admin";
@@ -37,10 +41,6 @@ export function ProductDetails()
 
     const [selectedSize, setSelectedSize] = useState(null);
     const [blockedDates, setBlockedDates] = useState([]);
-
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
 
     useEffect(() =>
     {
@@ -69,7 +69,7 @@ export function ProductDetails()
     {
         if (!currentUser)
         {
-            alert("חובה להתחבר כדי להוסיף שמלות למועדפים!");
+            showToast("חובה להתחבר כדי להוסיף שמלות למועדפים!", "error");
             return;
         }
 
@@ -110,7 +110,7 @@ export function ProductDetails()
 
         if (!currentUser)
         {
-            alert("חובה להתחבר כדי להוסיף תגובה!");
+            showToast("חובה להתחבר כדי להוסיף תגובה!", "error");
             return;
         }
 
@@ -171,7 +171,7 @@ export function ProductDetails()
     {
         if (!selectedSize)
         {
-            alert("אנא בחרי מידה לפני השריון");
+            showToast("אנא בחרי מידה לפני השריון", "error");
             return;
         }
 
@@ -180,7 +180,7 @@ export function ProductDetails()
 
         if (!startDate || !endDate)
         {
-            alert("אנא בחרי טווח תאריכים");
+            showToast("אנא בחרי טווח תאריכים", "error");
             return;
         }
         const tempRentData =
@@ -198,7 +198,7 @@ export function ProductDetails()
             const res = await createRenting(tempRentData);
             if (res && res.rentingId)
             {
-                alert("השמלה שוריינה בהצלחה! נעביר אותך כעת לדף התשלום.");
+                showToast("השמלה שוריינה בהצלחה! נעביר אותך כעת לדף התשלום.", "success");
                 navi("/payment",
                 {
                     state:
@@ -214,35 +214,50 @@ export function ProductDetails()
             }
             else
             {
-                alert("השרת לא החזיר מזהה הזמנה תקין.");
+                showToast("השרת לא החזיר מזהה הזמנה תקין.", "error");
             }
         }
         catch(err)
         {
-            if (err.response?.status === 401 || err.response?.status === 403) 
+            if (err.response?.status === 401 || err.response?.status === 403)
                 setShowAuthModal(true);
-                else
-                    alert("אופס... התאריך נתפס או שיש שגיאה בתקשורת עם השרת.");
+            else if (err.response?.status === 409)
+                showToast("אופס... התאריכים האלה כבר תפוסים במידה שבחרת.", "error");
+            else
+                showToast("אופס... התאריך נתפס או שיש שגיאה בתקשורת עם השרת.", "error");
         }
     };
 
-    if (status === "loading")
-        return <p>טוען את פרטי השמלה</p>;
-
-    if (status === "failed" || !dress)
-        return <p>אופס... שגיאה בטעינת השמלה</p>;
+    if (!dress || dress._id !== dressId) {
+        return status === "failed"
+            ? <p>אופס... שגיאה בטעינת השמלה</p>
+            : <p>טוען את פרטי השמלה</p>;
+    }
 
     return (
         <div className="product-container">
             <div className="right-column">
                 <div className="slider-container">
-                    <button onClick={prevImage}>{">"}</button>
-                    <img 
-                        src={dress.images[currentIndex]} 
-                        alt={dress.name} 
-                        className="main-display-image"
-                    /> 
-                    <button onClick={nextImage}>{"<"}</button>
+                    <div className="thumbnail-strip">
+                        {dress.images.map((img, index) => (
+                            <img
+                                key={index}
+                                src={getOptimizedImageUrl(img, 300)}
+                                alt={`${dress.name} - ${index + 1}`}
+                                className={`thumbnail-img ${index === currentIndex ? "active" : ""}`}
+                                onClick={() => setCurrentIndex(index)}
+                            />
+                        ))}
+                    </div>
+                    <div className="main-image-wrapper">
+                        <button onClick={prevImage}>{">"}</button>
+                        <img
+                            src={getOptimizedImageUrl(dress.images[currentIndex], 900)}
+                            alt={dress.name}
+                            className="main-display-image"
+                        />
+                        <button onClick={nextImage}>{"<"}</button>
+                    </div>
                 </div>
                 <div className="reviews-section">
                     <h3> מה הכלות שלנו אומרות</h3>
@@ -283,7 +298,7 @@ export function ProductDetails()
                 <p className="description">{dress.description}</p>
                 <div className="size-and-favorite-row">
                     <div className="sizes-container">
-                        {["XS", "S", "M", "L", "XL"].map(size => (
+                        {(dress.sizes?.length ? dress.sizes : ["XS", "S", "M", "L", "XL"]).map(size => (
                             <button
                                 key={size}
                                 type="button"
@@ -355,7 +370,7 @@ export function ProductDetails()
                     <div className="auth-modal">
                         <h3>התחברי על מנת לשריין תאריכים</h3>
                         <div className="modal-actions">
-                            <button onClick={() => navi("/login")}>עבור להתחברות</button>
+                            <button onClick={() => navi("/login", { state: { from: location.pathname } })}>עבור להתחברות</button>
                             <button onClick={() => setShowAuthModal(false)}>אישור</button>
                         </div>
                     </div>

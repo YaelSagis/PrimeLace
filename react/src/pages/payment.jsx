@@ -114,6 +114,9 @@ export function Payment() {
                 {paymentMethod === "credit_card" ? (
                     <>
                         <h3>פרטי כרטיס אשראי</h3>
+                        <p className="payment-method-note">
+                            זהו תהליך הדמיה בלבד - הפרטים אינם נשמרים ולא מתבצע חיוב אמיתי.
+                        </p>
                         <input
                             type="text"
                             placeholder="שם בעל הכרטיס"

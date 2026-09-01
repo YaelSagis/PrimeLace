@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getAllDresses, getDressById, addDress, updateDress, deleteDress, addReview} from "../../API/dressesApi";
+import { getAllDresses, getDressById, addDress, updateDress, deleteDress, addReview, getPopularDresses} from "../../API/dressesApi";
 import { getDressesByCategory } from "../../API/categoriesApi";
 
 export const getAllDressesThunk = createAsyncThunk('dresses/getAll', async()=> { return await getAllDresses() });
 export const getDressByIdThunk = createAsyncThunk('dresses/getById', async(id)=> { return await getDressById(id) });
+export const getPopularDressesThunk = createAsyncThunk('dresses/getPopular', async()=> { return await getPopularDresses() });
 export const addDressThunk = createAsyncThunk('dresses/addDress', async(dress)=> { return await addDress(dress) });
 export const updateDressThunk = createAsyncThunk('dresses/update', async(dress)=> { return await updateDress(dress) });
 export const deleteDressThunk = createAsyncThunk('dresses/delete', async(id)=> { return await deleteDress(id) });
@@ -15,6 +16,8 @@ const initialState=
     dresses: [],
     currentDress: null,
     favorites: [],
+    popularDresses: [],
+    popularStatus: 'idle',
     status: 'idle',
 };
 
@@ -122,7 +125,18 @@ const dressesSlice=createSlice(
             })
             .addCase(getDressesByCategoryThunk.rejected, (state) => {
                 state.status = 'failed';
-            }) 
+            })
+
+            .addCase(getPopularDressesThunk.pending, function(state) {
+                state.popularStatus = 'loading';
+            })
+            .addCase(getPopularDressesThunk.fulfilled, (state, action) => {
+                state.popularStatus = 'succeeded';
+                state.popularDresses = action.payload;
+            })
+            .addCase(getPopularDressesThunk.rejected, function(state) {
+                state.popularStatus = 'failed';
+            })
         }
     }
 )

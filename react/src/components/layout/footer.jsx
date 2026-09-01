@@ -1,7 +1,25 @@
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import "../../styles/layout.css";
 
 export function Footer() {
+    const [feedbackEmail, setFeedbackEmail] = useState("");
+    const [feedbackMessage, setFeedbackMessage] = useState("");
+    const [feedbackSent, setFeedbackSent] = useState(false);
+
+    const handleFeedbackSubmit = (e) => {
+        e.preventDefault();
+        setFeedbackSent(true);
+        setFeedbackEmail("");
+        setFeedbackMessage("");
+    };
+
+    useEffect(() => {
+        if (!feedbackSent) return;
+        const timer = setTimeout(() => setFeedbackSent(false), 5000);
+        return () => clearTimeout(timer);
+    }, [feedbackSent]);
+
     return (
         <footer className="footer-container" dir="rtl">
             <div className="footer-content">
@@ -26,17 +44,32 @@ export function Footer() {
                     <h3>המיקום שלנו</h3>
                     <p>
                         <strong>סניף ירושלים:</strong><br />
-                        רחוב ירמיהו 48, ירושלים
+                        רחוב ממילא, ירושלים
                     </p>
                 </div>
 
                 <div className="footer-feedback">
                     <h3>משוב</h3>
-                    <form className="feedback-form">
-                        <input type="email" placeholder="אימייל:" />
-                        <textarea placeholder=":הקלידי כאן"></textarea>
-                        <button type="submit">שליחה</button>
-                    </form>
+                    {feedbackSent ? (
+                        <p className="feedback-success-msg">תודה על המשוב שלך! 🤍</p>
+                    ) : (
+                        <form className="feedback-form" onSubmit={handleFeedbackSubmit}>
+                            <input
+                                type="email"
+                                placeholder="אימייל:"
+                                value={feedbackEmail}
+                                onChange={(e) => setFeedbackEmail(e.target.value)}
+                                required
+                            />
+                            <textarea
+                                placeholder=":הקלידי כאן"
+                                value={feedbackMessage}
+                                onChange={(e) => setFeedbackMessage(e.target.value)}
+                                required
+                            ></textarea>
+                            <button type="submit">שליחה</button>
+                        </form>
+                    )}
                 </div>
             </div>
 

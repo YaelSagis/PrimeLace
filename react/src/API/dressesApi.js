@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url=`http://localhost:2000`;
+const url = import.meta.env.VITE_API_URL || "http://localhost:2000";
 
 export const getAllDresses= async () =>
 {
@@ -27,6 +27,20 @@ export const getDressById = async (id) =>
     catch (error) 
     {
         console.log("השמלה לא נמצאה בשרת");
+        throw error;
+    }
+};
+
+export const getPopularDresses = async () =>
+{
+    try
+    {
+        const res = await axios.get(`${url}/dresses/popular`);
+        return res.data;
+    }
+    catch (error)
+    {
+        console.log("לא ניתן למשוך את השמלות הפופולריות מהשרת");
         throw error;
     }
 };

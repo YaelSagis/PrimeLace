@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url=`http://localhost:2000`;
+const url = import.meta.env.VITE_API_URL || "http://localhost:2000";
 
 export const getMeUser = async ()=>
 {

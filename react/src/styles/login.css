@@ -61,6 +61,11 @@
     box-sizing: border-box;
     font-family: inherit;
     font-size: 15px;
+    border-radius: var(--radius-input, 10px);
+}
+
+.login-card input.input-error {
+    border-color: #c98b7b;
 }
 
 .login-card button {

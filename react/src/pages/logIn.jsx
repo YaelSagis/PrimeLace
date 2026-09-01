@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { logInUserThunk } from "../redux/slices/authSlice";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/logIn.css"
 
 export function LogIn() {
@@ -10,13 +10,14 @@ export function LogIn() {
     const [error, setError] = useState(null);
     const dispatch = useDispatch();
     const navi = useNavigate();
+    const location = useLocation();
 
     const submitLogIn = async (e) => {
         e.preventDefault();
         setError(null);
         try {
             await dispatch(logInUserThunk({ email, password })).unwrap();
-            navi("/");
+            navi(location.state?.from || "/");
         } catch (err) {
             setError("פרטי ההתחברות שגויים.");
         }

@@ -32,7 +32,7 @@ The content is organized as follows:
 <notes>
 - Some files may have been excluded based on .gitignore rules and Repomix's configuration
 - Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
-- Only files matching these patterns are included: src/pages/category.jsx, src/pages/collections.jsx
+- Only files matching these patterns are included: src/components/admin
 - Files matching patterns in .gitignore are excluded
 - Files matching default ignore patterns are excluded
 - Files are sorted by Git change count (files with more changes are at the bottom)
@@ -42,195 +42,493 @@ The content is organized as follows:
 
 <directory_structure>
 src/
-  pages/
-    category.jsx
-    collections.jsx
+  components/
+    admin/
+      adminCharts.jsx
+      adminDashboard.jsx
+      categories.jsx
+      rentings.jsx
+      users.jsx
 </directory_structure>
 
 <files>
 This section contains the contents of the repository's files.
 
-<file path="src/pages/category.jsx">
-import { useDispatch, useSelector } from "react-redux";
-import { DressCard } from "../components/presentation/dressCard";
-import { useEffect, useState } from "react";
-import { addDressThunk, deleteDressThunk, getDressesByCategoryThunk } from "../redux/slices/dressesSlice";
-import { useNavigate, useParams } from "react-router-dom";
-import "../styles/category.css";
-import { uploadImagesToCloudinary } from "../API/dressesApi";
+<file path="src/components/admin/adminCharts.jsx">
+import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, LineChart, Line, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
 
-export function Category()
-{
-    const {categoryId} = useParams();
-    const dispatch = useDispatch();
-    const navi = useNavigate();
-
-    const dresses = useSelector((state) => state.dresses.dresses);
-    const status = useSelector((state) => state.dresses.dressStatus);
-
-    const currentUser = useSelector((state) => state.auth?.currentUser);
-    const isAdmin = currentUser && currentUser.userType === 'admin';
-
-    const [name, setName] = useState("");
-    const [color, setColor] = useState("");
-    const [price, setPrice] = useState("");
-
-    const [selectedFiles, setSelectedFiles] = useState([]);
-
-    useEffect(()=>
-    {
-        if(categoryId)
-            dispatch(getDressesByCategoryThunk(categoryId));
-    },[categoryId, dispatch]);
-
-    const handleAddDress = async (e)=>
-    {
-        e.preventDefault();
-
-        const uploadedUrls = await uploadImagesToCloudinary(selectedFiles)
-
-        const newDress = {
-            name,
-            color,
-            price: Number(price),
-            images: uploadedUrls,
-            category: categoryId
-        };
-
-        dispatch(addDressThunk(newDress));
-        
-        setName("");
-        setColor("");
-        setPrice("");
-        setSelectedFiles([])
-    }
-
-    const handleDeleteDress = (id) =>
-    {
-        dispatch(deleteDressThunk(id));
-    }
+export function AdminCharts({ categoryData, revenueData }) {
+    // פאלטת הצבעים היוקרתית של Prime Lace (גווני חום-טאופ ושמנת)
+    const COLORS = ['#a68d79', '#d8cec4', '#c4b8ad', '#2c2520'];
 
     return (
-        <div className="category-page-container">
-            <h1 className="category-title">Lace Dresses</h1>
-            {isAdmin && (
-                <div className="admin-card">
-                    <h3>הוספת שמלה חדשה לקטגוריה</h3>
-                    <form onSubmit={handleAddDress} className="admin-form">
-                        <div className="form-group">
-                            <label>שם השמלה</label>
-                            <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
-                        </div>
-                        <div className="form-group">
-                            <label>צבע</label>
-                            <input type="text" value={color} onChange={(e) => setColor(e.target.value)} />
-                        </div>
-                        <div className="form-group">
-                            <label>מחיר השכרה</label>
-                            <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} required />
-                        </div>
-                        <div className="form-group">
-                            <label>תמונות השמלה</label>
-                            <div className="file-upload-wrapper">
-                                <input 
-                                    type="file" 
-                                    multiple 
-                                    onChange={(e) => setSelectedFiles(Array.from(e.target.files))} 
-                                />
-                                <div className="file-upload-design">
-                                    <span className="upload-icon">✦</span>
-                                    <span>{selectedFiles.length > 0 ? `נבחרו ${selectedFiles.length} תמונות` : "לחצי להעלאת תמונות מהמחשב"}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="submit" className="btn-submit">הוסף שמלה</button>
-                    </form>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '40px', marginTop: '30px', width: '100%' }}>
+            
+            {/* חלק עליון: שני גרפים זה לצד זה במסכים רחבים */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '30px' }}>
+                
+                {/* גרף 1: שמלות/קטגוריות פופולריות (עוגה) */}
+                <div style={{ background: '#fff', padding: '20px', borderRadius: '8px', border: '1px solid #e5e0d8', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
+                    <h3 style={{ textAlign: 'center', color: '#2C2520', fontFamily: 'Assistant', marginBottom: '15px' }}>
+                        קטגוריות פופולריות בהשכרות
+                    </h3>
+                    <div style={{ width: '100%', height: 280 }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                                <Pie
+                                    data={categoryData}
+                                    cx="50%"
+                                    cy="50%"
+                                    innerRadius={60} // עושה את זה ל-Donut Chart מודרני ויפה
+                                    outerRadius={90}
+                                    paddingAngle={5}
+                                    dataKey="value"
+                                    label
+                                >
+                                    {categoryData.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                    ))}
+                                </Pie>
+                                <Tooltip />
+                                <Legend />
+                            </PieChart>
+                        </ResponsiveContainer>
+                    </div>
                 </div>
-            )}
 
-            {status === 'loading' ? (
-                <div className="status-message loading">טוען שמלות...</div>
-            ) : status === 'failed' ? (
-                <div className="status-message error">שגיאה בטעינת השמלות</div>
-            ) : dresses && dresses.length === 0 ? (
-                <div className="status-message empty">אין עדיין שמלות בקטגוריה זו</div>
-            ) : (
-                <div className="dresses-grid">
-                    {dresses.map((d) => (
-                        <div key={d._id} className="dress-item-wrapper">
-                            <DressCard dress={d} func={(id) => navi(`/productDetails/${id}`)} />
-                            {isAdmin && (
-                                <button className="delete-btn" onClick={() => handleDeleteDress(d._id)}>
-                                    מחק שמלה
-                                </button>
-                            )}
-                        </div>
-                    ))}
+                {/* גרף 2: מגמת הכנסות חודשיות (קווי) */}
+                <div style={{ background: '#fff', padding: '20px', borderRadius: '8px', border: '1px solid #e5e0d8', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
+                    <h3 style={{ textAlign: 'center', color: '#2C2520', fontFamily: 'Assistant', marginBottom: '15px' }}>
+                        הכנסות בחודשים האחרונים (בשקלים)
+                    </h3>
+                    <div style={{ width: '100%', height: 280 }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={revenueData}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0ebd8" />
+                                <XAxis dataKey="month" stroke="#777" />
+                                <YAxis stroke="#777" />
+                                <Tooltip />
+                                <Line 
+                                    type="monotone" 
+                                    dataKey="revenue" 
+                                    stroke="#a68d79" 
+                                    strokeWidth={3} 
+                                    dot={{ r: 5, fill: '#2c2520' }} 
+                                    activeDot={{ r: 8 }} 
+                                />
+                            </LineChart>
+                        </ResponsiveContainer>
+                    </div>
                 </div>
-            )}
+
+            </div>
         </div>
-    )
+    );
 }
 </file>
 
-<file path="src/pages/collections.jsx">
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux"
-import { Outlet, useNavigate, useParams } from "react-router-dom";
-import { getAllCategoriesThunk } from "../redux/slices/categoriesSlice";
-import "../styles/collections.css";
+<file path="src/components/admin/adminDashboard.jsx">
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { AdminCategories } from './categories';
+import { AdminRentings } from './rentings';
+import { AdminUsers } from './users';
+import { getAllCategoriesThunk } from '../../redux/slices/categoriesSlice';
+import { getAllRentings } from '../../API/rentingsApi';
+import { getAllUsers } from '../../API/usersApi';
+import { AdminCharts } from './adminCharts';
+import '../../styles/adminDashboard.css';
 
-export function Collections()
+export function AdminDashboard() {
+    const dispatch = useDispatch();
+    const [activeTab, setActiveTab] = useState('overview'); // overview, categories, rentings, users
+
+    // נתונים מהסטייט ומה-API
+    const categories = useSelector((state) => state.categories.categories) || [];
+    const [rentings, setRentings] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [loadingStats, setLoadingStats] = useState(true);
+
+    useEffect(() => {
+        const fetchDashboardData = async () => {
+            try {
+                dispatch(getAllCategoriesThunk());
+                const rentingsData = await getAllRentings();
+                const usersData = await getAllUsers();
+                setRentings(rentingsData || []);
+                setUsers(usersData || []);
+            } catch (err) {
+                console.error("שגיאה בטעינת נתוני לוח הבקרה", err);
+            } finally {
+                setLoadingStats(false);
+            }
+        };
+        fetchDashboardData();
+    }, [dispatch]);
+
+    // חישוב מדדים סטטיסטיים
+    const totalRevenue = rentings.reduce((acc, curr) => acc + (Number(curr.totalAmount) || 0), 0);
+    const activeRentingsCount = rentings.filter(r => r.status === 'active' || r.status === 'confirmed').length;
+    const totalClients = users.filter(u => u.userType !== 'admin').length;
+
+    return (
+        <div className="admin-dashboard-page">
+            <div className="admin-header-section">
+                <h1 className="admin-main-title">PrimeLace Studio</h1>
+                <p className="admin-subtitle">פאנל ניהול ובקרה מתקדם</p>
+            </div>
+
+            {/* תפריט ניווט פנימי של הניהול */}
+            <div className="admin-tabs-nav">
+                <button 
+                    className={`admin-tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('overview')}
+                >
+                    ✦סקירה כללית ונתונים
+                </button>
+                <button 
+                    className={`admin-tab-btn ${activeTab === 'categories' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('categories')}
+                >
+                    ניהול קטגוריות
+                </button>
+                <button 
+                    className={`admin-tab-btn ${activeTab === 'rentings' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('rentings')}
+                >
+                    ניהול הזמנות והשכרות
+                </button>
+                <button 
+                    className={`admin-tab-btn ${activeTab === 'users' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('users')}
+                >
+                    ניהול לקוחות
+                </button>
+            </div>
+
+            {/* תוכן הטאבים */}
+            <div className="admin-tab-content">
+                {activeTab === 'overview' && (
+                    <div className="overview-container">
+                        {/* כרטיסיות נתונים (KPI Cards) */}
+                        <div className="kpi-grid">
+                            <div className="kpi-card">
+                                <span className="kpi-title">סך הכנסות משוערות</span>
+                                <span className="kpi-value">₪{totalRevenue.toLocaleString()}</span>
+                                <span className="kpi-sub">מהשכרות פעילות ומאושרות</span>
+                            </div>
+                            <div className="kpi-card">
+                                <span className="kpi-title">הזמנות פעילות</span>
+                                <span className="kpi-value">{activeRentingsCount}</span>
+                                <span className="kpi-sub">שמלות כרגע בהשכרה/הזמנה</span>
+                            </div>
+                            <div className="kpi-card">
+                                <span className="kpi-title">לקוחות רשומות</span>
+                                <span className="kpi-value">{totalClients}</span>
+                                <span className="kpi-sub">משתמשות פעילות במערכת</span>
+                            </div>
+                            <div className="kpi-card">
+                                <span className="kpi-title">קטגוריות פעילות</span>
+                                <span className="kpi-value">{categories.length}</span>
+                                <span className="kpi-sub">קולקציות מוצגות באתר</span>
+                            </div>
+                        </div>
+
+                        {/* אזור גרפים ויזואליים מעוצבים ברוח האתר */}
+                        <div className="charts-grid-section">
+                            <div className="custom-chart-card">
+                                <h3>התפלגות פעילות הקולקציות</h3>
+                                <p className="chart-desc">הצגת משקל הקטגוריות השונות במערכת</p>
+                                <div className="bar-chart-mock">
+                                    {categories.map((cat, index) => {
+                                        // יצירת רוחב דמה ויזואלי מרשים לגרף
+                                        const widths = ['85%', '65%', '90%', '75%', '50%'];
+                                        return (
+                                            <div key={cat._id} className="bar-row">
+                                                <span className="bar-label">{cat.name}</span>
+                                                <div className="bar-track">
+                                                    <div className="bar-fill" style={{ width: widths[index % widths.length] }}></div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                    {categories.length === 0 && <p className="empty-chart">אין קטגוריות להצגה בגרף</p>}
+                                </div>
+                            </div>
+
+                            <div className="custom-chart-card system-status-card">
+                                <h3>סטטוס מערכת וביצועים</h3>
+                                <p className="chart-desc">בדיקת תקינות רכיבי האתר</p>
+                                <div className="status-indicators">
+                                    <div className="status-item">
+                                        <span className="status-dot green"></span>
+                                        <span>חיבור ל-Cloudinary להעלאת תמונות: תקין</span>
+                                    </div>
+                                    <div className="status-item">
+                                        <span className="status-dot green"></span>
+                                        <span>Redux Store & API Synchronized: פעיל</span>
+                                    </div>
+                                    <div className="status-item">
+                                        <span className="status-dot green"></span>
+                                        <span>הרשאות מנהל (Admin Guard): מאובטח</span>
+                                    </div>
+                                </div>
+                                <div className="quick-actions-box">
+                                    <h4>פעולות מהירות</h4>
+                                    <div className="actions-buttons-flex">
+                                        <button onClick={() => setActiveTab('categories')} className="quick-action-btn">הוספת קטגוריה</button>
+                                        <button onClick={() => setActiveTab('rentings')} className="quick-action-btn">צפייה בהזמנות חדשות</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {activeTab === 'categories' && <AdminCategories />}
+                {activeTab === 'rentings' && <AdminRentings />}
+                {activeTab === 'users' && <AdminUsers />}
+            </div>
+        </div>
+    );
+}
+</file>
+
+<file path="src/components/admin/categories.jsx">
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addCategoryThunk, deleteCategoryThunk, getAllCategoriesThunk, updateCategoryThunk } from '../../redux/slices/categoriesSlice';
+
+export function AdminCategories () 
 {
     const dispatch = useDispatch();
-    const navi = useNavigate();
-    const {categoryId} = useParams();
+    const categories = useSelector((state) => state.categories.categories) || [];
+    const [newCategoryName, setNewCategoryName] = useState('');
 
-    const categories = useSelector((state)=> {return state.categories.categories});
-    const categoriesStatus = useSelector((state)=> {return state.categories.status});
+    useEffect(() => {
+        dispatch(getAllCategoriesThunk());
+    }, [dispatch]);
 
-    useEffect(()=>
+    const handleAdd = async (e) => 
     {
-        if(categoriesStatus === 'idle')
-            dispatch(getAllCategoriesThunk());
-    }, [categoriesStatus, dispatch]);
+        e.preventDefault();
 
-    function selectCategory(categoryId)
+        if (!newCategoryName.trim()) return;
+
+        const newCategory =
+        {
+            name: newCategoryName
+        }
+
+        try {
+            await dispatch(addCategoryThunk(newCategory)).unwrap();
+            setNewCategoryName('');
+            alert("הקטגוריה הוספה בהצלחה");
+        } 
+        catch (err) {
+            alert("שגיאה בהוספת קטגוריה");
+        }
+    };
+
+    const handleDelete = async (id) => 
     {
-        navi(`/collections/${categoryId}`);
-    }
+        if (!window.confirm("האם את בטוחה שברצונך למחוק קטגוריה זו?")) return;
+        
+        try 
+        {
+            await dispatch(deleteCategoryThunk(id)).unwrap();
+            alert("הקטגוריה נמחקה בהצלחה");
+        } 
+        catch (err) {
+            if (err.response && err.response.status === 400) 
+                alert("לא ניתן למחוק קטגוריה שיש בה שמלות!");
+            else
+                alert("משהו השתבש, לא ניתן למחוק את הקטגוריה.");
+        }
+    };
 
-    return(
-        <div className="collections-container">
-            {!categoryId && (
-                <>
-                    <div className="collections-header">
-                        <h1>הקולקציות שלנו</h1>
-                        <p className="collections-subtitle">בחרי את העונה המושלמת עבורך</p>
-                    </div>
+    const [editName, setEditName] = useState("");
+    const [editImage, setEditImage] = useState("");
 
-                    {categoriesStatus === 'loading' ? (
-                        <div className="collections-status-msg">טוען קולקציות...</div>
-                    ) : categoriesStatus === 'succeeded' ? (
-                        <div className="collections-grid">
-                            {categories.map((c) => (
-                                <div className="collection-card" key={c._id}>
-                                    <img src={c.image} alt={c.name} />
-                                    <h2>{c.name}</h2>
-                                    <button className="collection-btn" onClick={() => selectCategory(c._id)}>
-                                        צפי בקולקציה
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="collections-status-msg error">שגיאה בטעינת הקטגוריות</div>
-                    )}
-                </>
-            )}
-            <Outlet/>
+    const handleUpdate = async (id) => 
+    {
+        const updatedData = {
+            name: editName,
+            image: editImage
+        }
+        
+        await dispatch(updateCategoryThunk({ id, categoryData: updatedData })).unwrap();
+        alert("השינויים נשמרו!");
+    };
+
+    if (!categories) return <p>טוען קטגוריות...</p>;
+
+    return (
+        <div className="admin-page-container">
+            <div className="admin-card">
+                <h2>ניהול קטגוריות</h2>
+                <div className="add-category-card">
+                    <h3>הוספת קטגוריה חדשה</h3>
+                    <form onSubmit={handleAdd} className="category-input-group">
+                        <input 
+                            type="text" 
+                            value={newCategoryName} 
+                            placeholder="הזיני שם קטגוריה..." 
+                            onChange={(e) => setNewCategoryName(e.target.value)} 
+                        />
+                        <button type="submit" className="add-category-btn">הוספה</button>
+                    </form>
+                </div>
+
+                <table className="admin-table">
+                    <thead>
+                        <tr>
+                            <th>שם הקטגוריה</th>
+                            <th>עדכון שם</th>
+                            <th>עדכון תמונה (URL)</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {categories.map(cat => (
+                            <tr key={cat._id}>
+                                <td>{cat.name}</td>
+                                <td>
+                                    <input 
+                                        type="text" 
+                                        placeholder="שם חדש..." 
+                                        onChange={(e) => setEditName(e.target.value)} 
+                                    />
+                                </td>
+                                <td>
+                                    <input 
+                                        type="text" 
+                                        placeholder="לינק לתמונה..." 
+                                        onChange={(e) => setEditImage(e.target.value)} 
+                                    />
+                                </td>
+                                <td>
+                                    <button className="btn-update" onClick={() => handleUpdate(cat._id)}>עדכן</button>
+                                    <button className="btn-delete" onClick={() => handleDelete(cat._id)}>מחק</button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
-    )
+    );
+};
+</file>
+
+<file path="src/components/admin/rentings.jsx">
+import { useEffect, useState } from "react";
+import { getAllRentings } from "../../API/rentingsApi";
+
+export function AdminRentings() {
+    const [rentings, setRentings] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchRentings = async () => {
+            try {
+                const data = await getAllRentings();
+                setRentings(data);
+            } catch (error) {
+                console.error("שגיאה בטעינת ההשכרות", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchRentings();
+    }, []);
+
+    return (
+        <div className="admin-page-container">
+            <div className="admin-card">
+                <h2>ניהול הזמנות</h2>
+                {loading ? <p>טוען נתונים...</p> : (
+                    <table className="admin-table">
+                        <thead>
+                            <tr>
+                                <th>לקוחה</th>
+                                <th>שמלה</th>
+                                <th>מידה</th>
+                                <th>סכום</th>
+                                <th>סטטוס</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rentings.map((r) => (
+                                <tr key={r._id}>
+                                    <td>{r.userId ? `${r.userId.firstName} ${r.userId.lastName}` : "לקוחה"}</td>
+                                    <td>{r.dressId ? r.dressId.name : "שמלה"}</td>
+                                    <td>{r.size}</td>
+                                    <td>₪{r.totalAmount}</td>
+                                    <td>{r.status}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
+            </div>
+        </div>
+    );
+}
+</file>
+
+<file path="src/components/admin/users.jsx">
+import { useEffect, useState } from "react";
+import { getAllUsers } from "../../API/usersApi";
+
+export function AdminUsers() {
+    const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const data = await getAllUsers();
+                setUsers(data);
+            } catch (error) {
+                console.error("שגיאה בטעינת המשתמשים");
+            }
+            finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUsers();
+    }, []);
+
+    return (
+        <div className="admin-page-container">
+            <div className="admin-card">
+                <h2>ניהול לקוחות PrimeLace</h2>
+                {loading ? <p>טוען...</p> : (
+                    <table className="admin-table">
+                        <thead>
+                            <tr>
+                                <th>שם הלקוח</th>
+                                <th>אימייל ליצירת קשר</th>
+                                <th>סטטוס במערכת</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {users.map((u) => (
+                                <tr key={u._id}>
+                                    <td>{u.firstName} {u.lastName}</td>
+                                    <td>{u.email}</td>
+                                    <td>{u.userType === 'admin' ?' מנהל' : 'לקוח'}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
+            </div>
+        </div>
+    );
 }
 </file>
 

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addCategoryThunk, deleteCategoryThunk, getAllCategoriesThunk, updateCategoryThunk } from '../../redux/slices/categoriesSlice';
+import { useToast } from '../presentation/toast';
 
-export function AdminCategories () 
+export function AdminCategories ()
 {
     const dispatch = useDispatch();
+    const { showToast } = useToast();
     const categories = useSelector((state) => state.categories.categories) || [];
     const [newCategoryName, setNewCategoryName] = useState('');
 
@@ -26,10 +28,10 @@ export function AdminCategories ()
         try {
             await dispatch(addCategoryThunk(newCategory)).unwrap();
             setNewCategoryName('');
-            alert("הקטגוריה הוספה בהצלחה");
-        } 
+            showToast("הקטגוריה הוספה בהצלחה", "success");
+        }
         catch (err) {
-            alert("שגיאה בהוספת קטגוריה");
+            showToast("שגיאה בהוספת קטגוריה", "error");
         }
     };
 
@@ -37,16 +39,16 @@ export function AdminCategories ()
     {
         if (!window.confirm("האם את בטוחה שברצונך למחוק קטגוריה זו?")) return;
         
-        try 
+        try
         {
-            await dispatch(deleteCategoryThunk(id)).unwrap;
-            alert("הקטגוריה נמחקה בהצלחה");
-        } 
+            await dispatch(deleteCategoryThunk(id)).unwrap();
+            showToast("הקטגוריה נמחקה בהצלחה", "success");
+        }
         catch (err) {
-            if (err.response && err.response.status === 400) 
-                alert("לא ניתן למחוק קטגוריה שיש בה שמלות!");
+            if (err.response && err.response.status === 400)
+                showToast("לא ניתן למחוק קטגוריה שיש בה שמלות!", "error");
             else
-                alert("משהו השתבש, לא ניתן למחוק את הקטגוריה.");
+                showToast("משהו השתבש, לא ניתן למחוק את הקטגוריה.", "error");
         }
     };
 
@@ -60,11 +62,15 @@ export function AdminCategories ()
             image: editImage
         }
         
-        await dispatch(updateCategoryThunk({ id, categoryData: updatedData })).unwrap();
-        alert("השינויים נשמרו!");
+        try {
+            await dispatch(updateCategoryThunk({ id, categoryData: updatedData })).unwrap();
+            showToast("השינויים נשמרו!", "success");
+        } catch (err) {
+            showToast("שגיאה בעדכון הקטגוריה", "error");
+        }
     };
 
-    if (!categories) return <p>טוען קטגוריות...</p>;
+    if (!categories) return <p>טוענת קטגוריות...</p>;
 
     return (
         <div className="admin-page-container">
@@ -73,16 +79,23 @@ export function AdminCategories ()
                 <div className="add-category-card">
                     <h3>הוספת קטגוריה חדשה</h3>
                     <form onSubmit={handleAdd} className="category-input-group">
-                        <input 
-                            type="text" 
-                            value={newCategoryName} 
-                            placeholder="הזיני שם קטגוריה..." 
-                            onChange={(e) => setNewCategoryName(e.target.value)} 
+                        <input
+                            type="text"
+                            value={newCategoryName}
+                            placeholder="הזיני שם קטגוריה..."
+                            onChange={(e) => setNewCategoryName(e.target.value)}
                         />
                         <button type="submit" className="add-category-btn">הוספה</button>
                     </form>
                 </div>
 
+                <div className="admin-table-toolbar">
+                    <span className="admin-table-count">{categories.length} קטגוריות</span>
+                </div>
+
+                {categories.length === 0 ? (
+                    <p className="empty-orders">עדיין אין קטגוריות במערכת</p>
+                ) : (
                 <table className="admin-table">
                     <thead>
                         <tr>
@@ -118,6 +131,7 @@ export function AdminCategories ()
                         ))}
                     </tbody>
                 </table>
+                )}
             </div>
         </div>
     );

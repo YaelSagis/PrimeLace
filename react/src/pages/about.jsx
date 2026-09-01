@@ -1,10 +1,10 @@
 import "../styles/about.css";
-import img1 from "https://res.cloudinary.com/x0um3j7c/image/upload/v1786875112/Gemini_Generated_Image_2ksjck2ksjck2ksj_fr3mtw.png";
-import img2 from "https://res.cloudinary.com/x0um3j7c/image/upload/v1786875113/Gemini_Generated_Image_3vd1yy3vd1yy3vd1_pbw70j.png";
-import img3 from "https://res.cloudinary.com/x0um3j7c/image/upload/v1786875112/Gemini_Generated_Image_ca1ydwca1ydwca1y_e6nyxt.png";
-import img4 from "https://res.cloudinary.com/x0um3j7c/image/upload/v1786875113/Gemini_Generated_Image_5oyqc5oyqc5oyqc5_bmzlhy.png";
-import img5 from "https://res.cloudinary.com/x0um3j7c/image/upload/v1786875111/Gemini_Generated_Image_93hkoq93hkoq93hk_bhwcjl.png";
-import img6 from "https://res.cloudinary.com/x0um3j7c/image/upload/v1786875112/Gemini_Generated_Image_ji34keji34keji34_y8bx5f.png";
+const img1 = "https://res.cloudinary.com/x0um3j7c/image/upload/v1786875112/Gemini_Generated_Image_2ksjck2ksjck2ksj_fr3mtw.png";
+const img2 = "https://res.cloudinary.com/x0um3j7c/image/upload/v1786875113/Gemini_Generated_Image_3vd1yy3vd1yy3vd1_pbw70j.png";
+const img3 = "https://res.cloudinary.com/x0um3j7c/image/upload/v1786875112/Gemini_Generated_Image_ca1ydwca1ydwca1y_e6nyxt.png";
+const img4 = "https://res.cloudinary.com/x0um3j7c/image/upload/v1786875113/Gemini_Generated_Image_5oyqc5oyqc5oyqc5_bmzlhy.png";
+const img5 = "https://res.cloudinary.com/x0um3j7c/image/upload/v1786875111/Gemini_Generated_Image_93hkoq93hkoq93hk_bhwcjl.png";
+const img6 = "https://res.cloudinary.com/x0um3j7c/image/upload/v1786875112/Gemini_Generated_Image_ji34keji34keji34_y8bx5f.png";
 
 export function About() {
     return (

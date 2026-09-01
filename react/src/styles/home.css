@@ -22,50 +22,18 @@
     background-color: #FAF8F5;
 }
 
-/* -----------------------------------------
-   1. Quick Admin Panel
--------------------------------------------- */
-.admin-inline-panel {
-    background: #FFFFFF;
-    border-bottom: 1px solid #EAE4DC;
-    padding: 16px 8%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
-}
-
-.admin-inline-panel h3 {
-    font-size: 0.9rem;
-    margin: 0;
-    color: #8C7E72;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    font-weight: 600;
-}
-
-.admin-panel-buttons {
-    display: flex;
-    gap: 12px;
-}
-
-.admin-panel-buttons button {
-    background: #FAF8F5;
-    border: 1px solid #D8CFB9;
-    color: #2C2520;
-    padding: 8px 18px;
-    font-size: 0.8rem;
+/* גרסה קלה יותר של אותה הודעת טעינה - לשימוש בתוך אזור בודד בעמוד
+   (למשל "הקולקציה האחרונה" או "השמלות הפופולריות"), כשכל שאר העמוד
+   כבר מוצג ורק האזור הזה עדיין ממתין לתשובה מהשרת */
+.home-section-loading {
+    width: 100%;
+    text-align: center;
+    padding: 60px 20px;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.05rem;
     letter-spacing: 1px;
-    cursor: pointer;
-    border-radius: 2px;
-    transition: all 0.3s ease;
-    font-weight: 500;
-}
-
-.admin-panel-buttons button:hover {
-    background: #A99A8D;
-    color: #FFFFFF;
-    border-color: #A99A8D;
+    color: #A99A8D;
 }
 
 /* -----------------------------------------
@@ -162,10 +130,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
-
     padding: 50px 0; 
     box-sizing: border-box;
-    background-color: #fff; /* משתלב ברקע של האזור */
+    background-color: #fff;
     border-bottom: 1px solid #EAE3D9;
 }
 
@@ -176,11 +143,8 @@
     height: 40px;
     object-fit: contain;
     margin: 0 auto;
-    
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
-    
-    /* למקרה שזה לא נראה טוב במסכים מסוימים, נוודא שהתמונה לא נחתכת */
     overflow: visible;
 }
 
@@ -209,7 +173,7 @@
     grid-template-columns: 1fr 1fr;
     background: transparent;
     background-color: #F4F1EA;
-    padding: 60px 8% 90px 8%; /* מרווח עליון מתון שמאפשר לחוצץ לשבת בדיוק באמצע */
+    padding: 60px 8% 90px 8%;
     box-sizing: border-box;
     align-items: center;
     gap: 40px;
@@ -346,15 +310,19 @@
     margin: 15px auto 0 auto;
 }
 
-/* שורת הסרטונים */
 .vertical-videos-section {
     width: 100% !important;
-    max-width: 1600px !important;
+    max-width: 1200px !important;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
 
 .video-card {
     width: 100%;
+    aspect-ratio: 9 / 16;
     max-width: 100% !important;
-
     overflow: hidden;
     border-radius: 4px;
     border: 1px solid #EAE3D9;
@@ -430,7 +398,6 @@
 -------------------------------------------- */
 .editorial-collections-section {
     width: 100%;
-    /* ביטול Padding בצדדים כדי מאפשר לתמונות להתקרב עד לקצוות המסך */
     padding: 90px 0; 
     box-sizing: border-box;
     display: flex;
@@ -438,22 +405,19 @@
     gap: 120px;
 }
 
-/* שורה בודדת: יישור תחתון (flex-end) שמנמיך את הטקסט והכפתור */
 .collection-row {
     display: flex;
-    align-items: flex-end; /* מוריד את הטקסט והלחצן לחלק התחתון של התמונות */
+    align-items: flex-end; 
     justify-content: space-between;
     width: 100%;
-    padding: 0 4%; /* מרווח קטן מאוד מקצה המסך כדי שהתמונה תיגע כמעט בקצה */
+    padding: 0 4%; 
     box-sizing: border-box;
 }
 
-/* שורה זוגית: הופכת את הכיוון (זיג-זג) */
 .collection-row.reverse {
     flex-direction: row-reverse;
 }
 
-/* שלשת התמונות האנכיות והארוכות */
 .trio-images-wrapper {
     display: flex;
     gap: 16px;
@@ -484,7 +448,6 @@
     transform: scale(1.03);
 }
 
-/* גוש הטקסט והלחצן - מונמכים ויושבים בתחתית */
 .row-text-side {
     width: 24%;
     display: flex;
@@ -676,7 +639,7 @@
     }
     
     .video-card {
-        width: 75%;
+        width: 70%;
         max-width: 280px;
         height: auto;
         aspect-ratio: 9 / 16;

@@ -80,6 +80,7 @@ form input, form textarea {
     font-family: 'Segoe UI', sans-serif;
     font-size: 1rem;
     box-sizing: border-box;
+    border-radius: var(--radius-input, 10px);
 }
 
 form textarea {
@@ -101,6 +102,21 @@ form button {
 
 form button:hover {
     background-color: #8f7d6b;
+}
+
+.contact-success-msg {
+    background-color: #f4efe9;
+    border: 1px solid #dcd5cc;
+    border-inline-start: 3px solid #a68d79;
+    padding: 30px;
+    text-align: center;
+}
+
+.contact-success-msg p {
+    margin: 0;
+    color: #2c2520;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
 }
 
 /* Map */

@@ -2,12 +2,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
 
 :root {
-  --page-bg: #F9F8F3; 
-  --form-bg: #EAE6DF; 
-  --button-taupe: #A99A8D; 
+  --page-bg: #F9F8F3;
+  --form-bg: #EAE6DF;
+  --button-taupe: #A99A8D;
   --button-taupe-hover: #8C7E72;
-  --text-dark: #2C2A29; 
+  --text-dark: #2C2A29;
   --border-color: #D4C5B9;
+  /* עיגול אחיד לכל שדות הטופס (אינפוטים, סלקטים, טקסטאריות) באתר -
+     כדי שהאתר יראה קצת יותר "אמיתי" ומודרני, בלי לגעת בכפתורי ה-CTA
+     המחודדים בכוונה שהם חלק מהזהות העיצובית האדיטוריאלית */
+  --radius-input: 10px;
 }
 
 html, body, #root {
@@ -60,7 +64,7 @@ ul {
 /* Admin Pages */
 .admin-page-container {
     width: 100%;
-    padding: 40px 20px;
+    padding: 40px 30px;
     background-color: var(--page-bg);
     min-height: 100vh;
     display: flex;
@@ -69,16 +73,23 @@ ul {
     box-sizing: border-box;
 }
 
+/* לפני כן היה max-width: 800px - כרטיס צר וממורכז שנראה "מכווץ" ליד
+   טאב הסקירה הכללית (Overview) שממלא את כל רוחב המסך. עכשיו כל
+   טאבי הניהול (קטגוריות, לקוחות, הזמנות, שמלות) מתפרסים באותה מידה,
+   עם רדיוס פינות ומרווחים שתואמים את שאר אזור הניהול */
 .admin-card {
     background: #ffffff;
     border: 1px solid var(--border-color);
     padding: 40px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
     margin: 0 auto;
-    max-width: 800px;
+    max-width: 1400px;
     width: 100%;
     box-sizing: border-box;
-    border-radius: 4px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
 }
 
 .admin-card h2 {
@@ -122,6 +133,7 @@ ul {
     font-family: inherit;
     font-size: 15px;
     box-sizing: border-box;
+    border-radius: var(--radius-input);
     transition: all 0.3s ease;
 }
 
@@ -167,6 +179,7 @@ ul {
     color: var(--text-dark);
     font-size: 14px;
     box-sizing: border-box;
+    border-radius: var(--radius-input);
     transition: all 0.3s ease;
     z-index: 1;
 }
@@ -277,44 +290,6 @@ ul {
     color: white;
 }
 
-/* טופס הוספה מעוצב בתוך ה-admin-card */
-.admin-add-form {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 40px;
-    align-items: flex-end;
-}
-
-.admin-add-form input {
-    flex: 1;
-    padding: 12px 16px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    font-family: inherit;
-    font-size: 15px;
-}
-
-.admin-add-form button {
-    background-color: var(--button-taupe);
-    color: white;
-    border: none;
-    padding: 12px 30px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background 0.3s;
-}
-
-.admin-add-form button:hover {
-    background-color: var(--button-taupe-hover);
-}
-
-.admin-card {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch; /* מוודא שכל האלמנטים בפנים נמתחים */
-}
-
 .btn-delete {
     background-color: var(--button-taupe) !important;
     color: white !important;
@@ -362,7 +337,7 @@ ul {
     width: 100%;
     padding: 12px;
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: var(--radius-input);
     box-sizing: border-box; /* חשוב כדי שהאינפוט לא יחרוג */
     font-family: inherit;
 }
@@ -382,6 +357,60 @@ ul {
 
 .add-category-btn:hover {
     background-color: var(--button-taupe-hover);
+}
+
+/* שורת כלים מעל טבלאות ניהול (חיפוש + מונה תוצאות) - למשל בטאב
+   "שמלות" וניתן לשימוש חוזר בכל טבלת ניהול אחרת */
+.admin-table-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+
+.admin-search-input {
+    flex: 1;
+    min-width: 220px;
+    max-width: 340px;
+    padding: 11px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-input);
+    background-color: #FCFCFA;
+    font-family: inherit;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.admin-search-input:focus {
+    outline: none;
+    border-color: var(--button-taupe);
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(169, 154, 141, 0.1);
+}
+
+.admin-table-count {
+    color: #8b837d;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+/* תא עם תמונה ממוזערת + שם, לשימוש בטבלת השמלות */
+.dress-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.dress-thumb {
+    width: 42px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 6px;
+    background-color: var(--page-bg);
+    flex-shrink: 0;
 }
 
 /* רק למסכים קטנים (טלפונים) */

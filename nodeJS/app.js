@@ -1,5 +1,6 @@
 import express from "express"
 import mongoose from "mongoose";
+import "dotenv/config";
 import cors from "cors"
 import {connectCloudDB,connectLocalDB } from "./config/db.js"
 import dressRouter from "./routers/dressRouter.js";
@@ -22,9 +23,10 @@ app.use('/users', userRouter);
 connectCloudDB();
 // connectLocalDB();
 
-app.listen(2000, ()=>
+const PORT = process.env.PORT || 2000;
+app.listen(PORT, ()=>
 {
-    console.log("primelace server is running!");
+    console.log(`primelace server is running on port ${PORT}!`);
 })
 
 import RentingModel from "./models/renting.js";

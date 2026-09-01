@@ -44,7 +44,7 @@
     margin-bottom: 14px;
     border: 1px solid #e0dcd5;
     background: #fdfbf8;
-    border-radius: 4px;
+    border-radius: var(--radius-input, 10px);
     box-sizing: border-box;
     font-size: 0.95rem;
     text-align: right;

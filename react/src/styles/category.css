@@ -22,11 +22,27 @@ body {
     letter-spacing: 2px;
 }
 
+.category-body {
+    /* grid (ולא flex) בכוונה: תאי grid נמתחים כברירת מחדל לגובה השורה,
+       כך שסרגל הצד וגריד השמלות תמיד יהיו באותו גובה ("מגיע עד הסוף") -
+       בלי חישובי גובה ידניים ב-JS */
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 32px;
+    padding: 0 40px;
+    box-sizing: border-box;
+}
+
+.category-main {
+    flex: 1;
+    min-width: 0;
+}
+
 .dresses-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 25px;
-    padding: 40px 0;
+    padding: 0 0 40px 0;
     width: 100%;
     max-width: none;
     margin: 0;
@@ -66,20 +82,29 @@ body {
 }
 
 @media (max-width: 1000px) {
+    .category-body {
+        grid-template-columns: 1fr;
+        padding: 0 20px;
+    }
+
     .dresses-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        padding: 30px;
+        padding: 20px 0;
     }
 }
 
 @media (max-width: 600px) {
     .dresses-grid {
         grid-template-columns: 1fr;
-        padding: 30px 20px;
+        padding: 20px 0;
     }
 
     .dress-card {
         width: 100%;
         max-width: 360px;
+    }
+
+    .category-body {
+        padding: 0 15px;
     }
 }

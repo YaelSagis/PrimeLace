@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../styles/contact.css"
 
 export function Contact()
@@ -19,6 +19,12 @@ export function Contact()
         setMessage("");
     };
 
+    useEffect(() => {
+        if (!submitted) return;
+        const timer = setTimeout(() => setSubmitted(false), 5000);
+        return () => clearTimeout(timer);
+    }, [submitted]);
+
     return (
         <div className="contact-page">
             <div className="contact-left-side">
@@ -30,7 +36,7 @@ export function Contact()
                         <img src="https://res.cloudinary.com/x0um3j7c/image/upload/v1786874361/maps-and-flags_qxgilw.png" alt="Address" className="contact-icon" />
                         <div>
                             <strong>Address</strong>
-                            <p>רחוב ירמיהו 48, ירושלים</p>
+                            <p>רחוב ממילא, ירושלים</p>
                         </div>
                     </div>
 
@@ -54,9 +60,8 @@ export function Contact()
 
             <div className="contact-right-side">
                 {submitted ? (
-                    <div>
-                        <p>ההודעה נמסרה בהצלחה! תודה לך</p>
-                        {setSubmitted(false)};
+                    <div className="contact-success-msg">
+                        <p>ההודעה נמסרה בהצלחה! תודה לך 🤍</p>
                     </div>
                 ) : (
                     <form onSubmit={handleContactSubmit}>
@@ -71,11 +76,11 @@ export function Contact()
                 )}
 
                 <div className="map-container">
-                    <iframe 
+                    <iframe
                         title="studio-location"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3391.1982439120757!2d35.208281724102605!3d31.79234667409057!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1502d6248fe3d5bd%3A0x3bfff2646a812983!2z15nXqNee15nXlNeVIDQ4LCDXmdeo15XXqdec15nXnQ!5e0!3m2!1siw!2sil!4v1782934401218!5m2!1siw!2sil"
-                        width="100%" 
-                        height="100%" 
+                        src="https://maps.google.com/maps?q=Mamilla%20Avenue%2C%20Jerusalem&output=embed"
+                        width="100%"
+                        height="100%"
                     ></iframe>
                 </div>
             </div>

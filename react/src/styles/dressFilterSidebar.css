@@ -1,0 +1,150 @@
+.filter-sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    /* גובה מלא של השורה ב-grid (ראו category.css - .category-body הוא grid,
+       ותאי grid נמתחים כברירת מחדל לגובה השורה) - כך שסרגל הצד תמיד מגיע
+       עד סוף הבלוק של רשת השמלות לצידו */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-toggle-btn {
+    display: none;
+    width: 100%;
+    padding: 14px 20px;
+    background: #ffffff;
+    border: 1px solid var(--border-color, #d4c5b9);
+    color: var(--text-dark, #2c2520);
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.filter-toggle-arrow {
+    font-size: 0.7rem;
+    color: #a99a8d;
+}
+
+.filter-sidebar-content {
+    flex: 1;
+    background: #ffffff;
+    border: 1px solid var(--border-color, #d4c5b9);
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+    box-sizing: border-box;
+}
+
+.filter-section h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #2c2520;
+    margin: 0 0 14px 0;
+    font-weight: 500;
+}
+
+.filter-select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color, #d4c5b9);
+    background-color: #fcfcfa;
+    color: var(--text-dark, #2c2520);
+    font-family: inherit;
+    font-size: 0.9rem;
+    border-radius: var(--radius-input, 8px);
+    cursor: pointer;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--button-taupe, #a99a8d);
+}
+
+.price-range-inputs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.price-range-inputs input {
+    width: 0;
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color, #d4c5b9);
+    background-color: #fcfcfa;
+    color: var(--text-dark, #2c2520);
+    font-family: inherit;
+    font-size: 0.9rem;
+    border-radius: var(--radius-input, 8px);
+    box-sizing: border-box;
+}
+
+.price-range-inputs input:focus {
+    outline: none;
+    border-color: var(--button-taupe, #a99a8d);
+}
+
+.price-range-sep {
+    color: #a99a8d;
+}
+
+.filter-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-top: 1px solid #f0ebe4;
+    padding-top: 20px;
+    /* דוחף את המונה וכפתור האיפוס עד לתחתית הכרטיס - חלק מהאפקט של
+       "סרגל שמגיע עד הסוף" גם כשיש מעט מסננים פעילים */
+    margin-top: auto;
+}
+
+.filter-result-count {
+    font-size: 0.85rem;
+    color: #8c7e72;
+    letter-spacing: 0.5px;
+}
+
+.filter-reset-btn {
+    background: transparent;
+    border: 1px solid #2c2520;
+    color: #2c2520;
+    padding: 10px;
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-reset-btn:hover {
+    background: #2c2520;
+    color: #ffffff;
+}
+
+@media (max-width: 900px) {
+    .filter-sidebar {
+        width: 100%;
+        height: auto;
+    }
+
+    .filter-toggle-btn {
+        display: flex;
+    }
+
+    .filter-sidebar-content {
+        display: none;
+        margin-top: 10px;
+    }
+
+    .filter-sidebar.open .filter-sidebar-content {
+        display: flex;
+    }
+}

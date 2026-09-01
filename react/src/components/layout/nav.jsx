@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import { logOut } from "../../redux/slices/authSlice";
+import { useToast } from "../presentation/toast";
 import "../../styles/layout.css";
 
 export function Nav() {
@@ -9,12 +10,13 @@ export function Nav() {
     const isAdmin = currentUser?.userType === "admin";
     const dispatch = useDispatch();
     const navi = useNavigate();
+    const { showToast } = useToast();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     const handleLogOut = () => {
         dispatch(logOut());
         setIsDropdownOpen(false);
-        alert("התנתקת בהצלחה");
+        showToast("התנתקת בהצלחה", "success");
         navi("/");
     };
 
@@ -31,8 +33,12 @@ export function Nav() {
                 <li><NavLink to="/about">אודותינו</NavLink></li>
                 <li><NavLink to="/collections">קולקציות</NavLink></li>
                 <li><NavLink to="/contact">צרי קשר</NavLink></li>
-                <li><NavLink to="/signIn">הרשמה</NavLink></li>
+                {!currentUser && <li><NavLink to="/signIn">הרשמה</NavLink></li>}
                 <li><NavLink to="/favorites">רשימת משאלות</NavLink></li>
+
+                {isAdmin && (
+                    <li><NavLink to="/adminDashboard">פאנל ניהול</NavLink></li>
+                )}
 
                 <li className="dropdown-wrapper">
                     <span onClick={() => setIsDropdownOpen(!isDropdownOpen)} className="nav-link-style">

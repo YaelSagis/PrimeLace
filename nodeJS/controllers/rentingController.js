@@ -2,17 +2,30 @@ import express from "express"
 import mongoose from "mongoose";
 import RentingModel from "../models/renting.js"
 import PaymentModel from "../models/payment.js";
-import { isAvailable } from "../services/rentingService.js";
+import { isAvailable, releaseDressIfNoLongerOccupied, syncRentedDressesStatus } from "../services/rentingService.js";
 import {DressModel} from "../models/dress.js";
 
 export const getAllRentings=async(req, res)=>
 {
     try
     {
-        const rentings=await RentingModel.find()
-        .populate('userId', 'firstName lastName')
-        .populate('dressId', 'name');
-        res.status(200).json(rentings)
+        // מנתיב מוגן-מנהלים בלבד - ההזדמנות המתאימה לסנכרן את סטטוס
+        // "זמינה/מושכרת" של כל השמלות (תג תצוגה בפאנל הניהול), במקום
+        // להריץ את זה על כל טעינת קטלוג של לקוחות.
+        await syncRentedDressesStatus();
+
+        const rentings = await RentingModel.find()
+            .populate('userId', 'firstName lastName')
+            .populate({
+                path: 'dressId',
+                select: 'name category',
+                populate: {
+                    path: 'category',
+                    select: 'name'
+                }
+            });
+
+        res.status(200).json(rentings);
     }
     catch(err)
     {
@@ -41,6 +54,11 @@ export const addRenting = async (req, res) =>
     const userId = req.user._id;
 
     try {
+        const available = await isAvailable(dressId, size, rentDate, returnDate);
+        if (!available) {
+            return res.status(409).json({ message: "התאריכים שנבחרו כבר תפוסים במידה זו." });
+        }
+
         const newRenting = new RentingModel({
             userId: userId,
             dressId: dressId,
@@ -55,31 +73,35 @@ export const addRenting = async (req, res) =>
         });
 
         await newRenting.save();
+        const rentingId = newRenting._id;
 
-        await DressModel.findByIdAndUpdate(dressId, 
+        await DressModel.findByIdAndUpdate(dressId,
         {
-            $push: { 
-                rentals: { 
-                    _id: newRenting._id,
-                    size: size, 
-                    rentDate: rentDate, 
-                    returnDate: returnDate 
-                } 
+            status: "rented",
+            $push: {
+                rentals: {
+                    _id: rentingId,
+                    size: size,
+                    rentDate: rentDate,
+                    returnDate: returnDate
+                }
             }
         });
 
-        setTimeout(async () => 
+        setTimeout(async () =>
         {
-            const currentRent = await RentingModel.findById(newRenting._id);
-            
+            const currentRent = await RentingModel.findById(rentingId);
+
             if (currentRent && currentRent.status === "pending") {
 
-                await RentingModel.findByIdAndDelete(newRenting._id);
-                
+                await RentingModel.findByIdAndDelete(rentingId);
+
                 await DressModel.findByIdAndUpdate(dressId, {
-                    $pull: { rentals: { _id: newRenting._id } }
+                    $pull: { rentals: { _id: rentingId } }
                 });
-                
+
+                await releaseDressIfNoLongerOccupied(dressId);
+
                 console.log(`השריון הזמני פג תוקף ונמחק.`);
             }
         }, 15 * 60 * 1000);
@@ -178,13 +200,13 @@ export const deleteRenting=async(req, res)=>
 
 export const getAvailability = async (req, res) => {
     try {
-        const { dressId, startDate, endDate } = req.body;
+        const { dressId, size, startDate, endDate } = req.body;
 
-        if (!dressId || !startDate || !endDate) {
+        if (!dressId || !size || !startDate || !endDate) {
             return res.status(400).json("not found");
         }
 
-        const isAvailableRes = await isAvailable(dressId, startDate, endDate);
+        const isAvailableRes = await isAvailable(dressId, size, startDate, endDate);
         
         res.status(200).json({ available: isAvailableRes });
     } 

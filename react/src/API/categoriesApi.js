@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url=`http://localhost:2000`;
+const url = import.meta.env.VITE_API_URL || "http://localhost:2000";
 
 export const getAllCategories= async () =>
 {
@@ -12,6 +12,20 @@ export const getAllCategories= async () =>
     catch (error)
     {
         console.log("לא ניתן למשוך את הקטגוריות מהשרת");
+        throw error;
+    }
+};
+
+export const getLatestCategory = async () =>
+{
+    try
+    {
+        const res = await axios.get(`${url}/categories/latest`);
+        return res.data;
+    }
+    catch (error)
+    {
+        console.log("לא ניתן למשוך את הקטגוריה האחרונה מהשרת");
         throw error;
     }
 };
