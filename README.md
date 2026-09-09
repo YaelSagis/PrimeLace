@@ -1,3 +1,7 @@
+
+https://github.com/user-attachments/assets/0b553545-60f4-4e73-8ebd-326e3ce265d6
+
+
 # PrimeLace - Bridal Salon Rental Platform
 
 A full-stack web application for a bridal dress rental salon. Customers can browse the
