@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { addPayments } from "../API/rentingsApi";
 import { PayPal } from "../components/presentation/paypal";
-import "../styles/Payment.css";
+import "../styles/payment.css";
 
 export function Payment() {
     const location = useLocation();
