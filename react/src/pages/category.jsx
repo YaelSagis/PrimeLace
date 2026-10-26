@@ -16,8 +16,13 @@ export function Category()
 
     const category = useSelector((state) => state.categories.categories.find((c) => c._id === categoryId));
     const categoryName = location.state?.categoryName || category?.name || "קולקציה";
-    const dresses = useSelector((state) => state.dresses.dresses);
-    const status = useSelector((state) => state.dresses.status);
+    const loadedCategoryId = useSelector((state) => state.dresses.categoryDressesId);
+    const categoryDresses = useSelector((state) => state.dresses.categoryDresses);
+    const categoryStatus = useSelector((state) => state.dresses.categoryStatus);
+    // עד שמגיעה התשובה של הקטגוריה הנוכחית לא מציגים שמלות של קטגוריה קודמת
+    const isCurrent = loadedCategoryId === categoryId;
+    const dresses = isCurrent ? categoryDresses : [];
+    const status = isCurrent ? categoryStatus : 'loading';
 
     const {
         priceMin, setPriceMin,

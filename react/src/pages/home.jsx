@@ -4,6 +4,7 @@ import "../styles/home.css";
 import { useEffect } from "react";
 import { getLatestCategoryThunk } from "../redux/slices/categoriesSlice";
 import { getPopularDressesThunk } from "../redux/slices/dressesSlice";
+import { useRevealOnScroll } from "../hooks/useRevealOnScroll";
 
 export function Home() {
     const navi = useNavigate();
@@ -22,17 +23,18 @@ export function Home() {
     const latestLoading = !latestCategory && latestStatus !== 'succeeded';
     const popularLoading = popularDresses.length === 0 && popularStatus !== 'succeeded';
 
+    const pageRef = useRevealOnScroll([latestCategory, popularDresses]);
 
     return (
-        <div className="homepage">
+        <div className="homepage" ref={pageRef}>
             <header className="hero-video-section">
                 <video autoPlay loop muted playsInline className="hero-video">
                     <source src="https://res.cloudinary.com/x0um3j7c/video/upload/v1786649155/dress1-video_r1uwvh.mp4" type="video/mp4" />
                 </video>
                 <div className="hero-overlay">
                     <h1>PURE ELEGANCE.</h1>
-                    <button className="explore-btn" onClick={() => navi('/collections/6a4fee1efd0cef1ca059d166')}>
-                        EXPLORE THE COLLECTION
+                    <button className="lux-btn light" onClick={() => navi('/collections')}>
+                        EXPLORE THE COLLECTIONS
                     </button>
                 </div>
             </header>
@@ -48,15 +50,15 @@ export function Home() {
                     <div className="home-section-loading">עדיין אין קולקציות באתר. חוזרים בקרוב!</div>
                 ) : (
                     <>
-                        <div className="hero-text-side">
+                        <div className="hero-text-side reveal">
                             <span className="hero-badge">LATEST COLLECTION</span>
                             <h1>{latestCategory.name}</h1>
                             <p>גלי את העיצובים החדשים והמתוחכמים שלנו שמשלבים מסורת ויוקרה.</p>
-                            <button className="explore-btn" onClick={() => navi(`/collections/${latestCategory._id}`)}>
+                            <button className="lux-btn" onClick={() => navi(`/collections/${latestCategory._id}`)}>
                                 EXPLORE THE COLLECTION
                             </button>
                         </div>
-                        <div className="hero-image-side">
+                        <div className="hero-image-side reveal">
                             <img src={latestCategory.image} alt={latestCategory.name} className="hero-main-img" />
                         </div>
                     </>
@@ -71,18 +73,12 @@ export function Home() {
                 <img src="https://res.cloudinary.com/x0um3j7c/image/upload/v1786874217/Gemini_Generated_Image_jau7bljau7bljau7_hupe2c.png" alt="Divider" className="vintage-divider-img" loading="lazy"/>
             </div>
 
-            <div className="home-cta-footer">
-                <button className="editorial-cta-btn" onClick={() => navi("/all-dresses")}>
-                    VIEW ALL DRESSES ➔
-                </button>
-            </div>
-
             <div className="popular-wrapper">
-                <div className="section-divider">
+                <div className="section-divider reveal">
                     <h2>FEATURED STORIES</h2>
                     <div className="small-line"></div>
                 </div>
-                <section className="vertical-videos-section">
+                <section className="vertical-videos-section reveal">
                     <div className="video-card" onClick={() => navi('/product/6a80e0a9a6c7208f45b942c0')}>
                         <video src="https://res.cloudinary.com/x0um3j7c/video/upload/v1784478746/dress15-video_uzjfdn.mp4" autoPlay loop muted playsInline preload="none" />
                     </div>
@@ -96,14 +92,14 @@ export function Home() {
             </div>
 
             <section className="brand-quote-section">
-                <div className="quote-content">
+                <div className="quote-content reveal">
                     <span className="quote-mark">“</span>
                     <p>היופי האמיתי מתחיל ברגע שאת בוחרת להיות נאמנה לעצמך ולסגנון הייחודי שלך.</p>
                     <span className="quote-author">PRIME LACE ATELIER</span>
                 </div>
             </section>
 
-            <div className="section-divider">
+            <div className="section-divider reveal">
                 <h2>POPULAR PIECES</h2>
                 <div className="small-line"></div>
             </div>
@@ -121,8 +117,8 @@ export function Home() {
 
                     return (
                     <div
-                        key={index}
-                        className={`collection-row ${isReverse ? 'reverse' : ''}`}
+                        key={dress._id}
+                        className={`collection-row reveal ${isReverse ? 'reverse' : ''}`}
                     >
                         <div className="trio-images-wrapper">
                         {imagesToDisplay.map((imgSrc, imgIndex) => (
@@ -139,7 +135,7 @@ export function Home() {
                         <div className="row-text-side">
                         <h3>{dress.name}</h3>
                         <button
-                            className="discover-btn"
+                            className="lux-btn small"
                             onClick={() => navi(`/product/${dress._id}`)}
                         >
                             DISCOVER THE LINE
@@ -151,7 +147,13 @@ export function Home() {
             )}
             </section>
 
-            <section className="brand-values-section">
+            <div className="home-cta-footer reveal">
+                <button className="lux-btn" dir="ltr" onClick={() => navi("/all-dresses")}>
+                    VIEW ALL DRESSES <span className="lux-btn-arrow">→</span>
+                </button>
+            </div>
+
+            <section className="brand-values-section reveal">
                 <div className="value-item">
                     <h4>HAUTE COUTURE</h4>
                     <p>בדים נבחרים ברמה הגבוהה ביותר בעולם</p>
@@ -176,8 +178,8 @@ export function Home() {
             </section>
 
             <div className="home-cta-footer">
-                <button className="editorial-cta-btn" onClick={() => navi("/collections")}>
-                    VIEW ALL COLLECTIONS ➔
+                <button className="lux-btn" dir="ltr" onClick={() => navi("/collections")}>
+                    VIEW ALL COLLECTIONS <span className="lux-btn-arrow">→</span>
                 </button>
             </div>
         </div>

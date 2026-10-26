@@ -18,6 +18,11 @@ const initialState=
     favorites: [],
     popularDresses: [],
     popularStatus: 'idle',
+    // שמלות של קטגוריה בודדת נשמרות בנפרד מ-dresses (הקטלוג המלא),
+    // כדי שכניסה לקולקציה לא תדרוס את "כל השמלות"
+    categoryDresses: [],
+    categoryDressesId: null,
+    categoryStatus: 'idle',
     status: 'idle',
 };
 
@@ -116,15 +121,19 @@ const dressesSlice=createSlice(
                 state.status = 'failed';
             }) 
 
-            .addCase(getDressesByCategoryThunk.pending, function(state) {
-                state.status = 'loading'; 
+            .addCase(getDressesByCategoryThunk.pending, function(state, action) {
+                state.categoryStatus = 'loading';
+                state.categoryDressesId = action.meta.arg;
             })
             .addCase(getDressesByCategoryThunk.fulfilled, (state, action) => {
-                state.status = 'succeeded';
-                state.dresses = action.payload;
+                // מתעלמים מתשובה ישנה אם בינתיים עברו לקטגוריה אחרת
+                if (action.meta.arg !== state.categoryDressesId) return;
+                state.categoryStatus = 'succeeded';
+                state.categoryDresses = action.payload;
             })
-            .addCase(getDressesByCategoryThunk.rejected, (state) => {
-                state.status = 'failed';
+            .addCase(getDressesByCategoryThunk.rejected, (state, action) => {
+                if (action.meta.arg !== state.categoryDressesId) return;
+                state.categoryStatus = 'failed';
             })
 
             .addCase(getPopularDressesThunk.pending, function(state) {

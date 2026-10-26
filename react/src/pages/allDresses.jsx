@@ -27,8 +27,8 @@ export function AllDresses() {
     } = useDressFilters(dresses);
 
     useEffect(() => {
-        if (dressesStatus === 'idle') dispatch(getAllDressesThunk());
-    }, [dressesStatus, dispatch]);
+        dispatch(getAllDressesThunk());
+    }, [dispatch]);
 
     const hasData = dresses?.length > 0;
 
@@ -37,7 +37,11 @@ export function AllDresses() {
             <h1 className="category-title">כל השמלות</h1>
 
             {!hasData ? (
-                <div className="status-message loading">טוען שמלות...</div>
+                dressesStatus === 'failed' ? (
+                    <div className="status-message error">שגיאה בטעינת השמלות</div>
+                ) : (
+                    <div className="status-message loading">טוען שמלות...</div>
+                )
             ) : (
                 <div className="category-body">
                     <DressFilterSidebar

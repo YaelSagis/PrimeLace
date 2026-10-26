@@ -39,8 +39,7 @@ main, header, .nav-container, footer, .footer-container {
 }
 
 .full-width-page {
-    width: calc(100% + 80px);
-    margin-inline: -40px;
+    width: 100%;
 }
 
 body {

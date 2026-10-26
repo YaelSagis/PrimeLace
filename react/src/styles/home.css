@@ -74,7 +74,8 @@
     justify-content: flex-end;
     align-items: center;
     text-align: center;
-    background: transparent;
+    /* הצללה עדינה בתחתית כדי שהכותרת והכפתור ייקראו על וידאו בהיר */
+    background: linear-gradient(to top, rgba(26, 22, 18, 0.55) 0%, rgba(26, 22, 18, 0.2) 30%, transparent 55%);
     color: #FFFFFF;
     margin: 0;
     padding: 0 20px 80px 20px;
@@ -94,32 +95,86 @@
     text-transform: uppercase;
 }
 
-.hero-overlay .explore-btn {
-    padding: 14px 40px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    color: #FFFFFF;
-    cursor: pointer;
-    font-size: 0.8rem;
-    letter-spacing: 3px;
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-    font-weight: 600;
-    text-transform: uppercase;
-    backdrop-filter: blur(6px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+.hero-video-section:has(.lux-btn:hover) .hero-video {
+    filter: brightness(0.55) contrast(1.1);
 }
 
-.hero-overlay .explore-btn:hover {
+/* -----------------------------------------
+   1. Buttons - סגנון אחיד לכל הכפתורים בעמוד
+-------------------------------------------- */
+.lux-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 42px;
+    background: transparent;
+    border: 1px solid #2C2520;
+    color: #2C2520;
+    cursor: pointer;
+    font-family: 'Assistant', 'Segoe UI', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.lux-btn:hover {
+    background: #2C2520;
+    color: #FFFFFF;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(44, 37, 32, 0.15);
+}
+
+.lux-btn.small {
+    padding: 13px 30px;
+    font-size: 0.68rem;
+    letter-spacing: 4px;
+}
+
+/* גרסה בהירה - לכפתור שיושב על וידאו */
+.lux-btn.light {
+    border-color: rgba(255, 255, 255, 0.9);
+    color: #FFFFFF;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(6px);
+}
+
+.lux-btn.light:hover {
     background: #FFFFFF;
     color: #1A1816;
-    border-color: #FFFFFF;
-    transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(255, 255, 255, 0.25);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
 }
 
-.hero-overlay .explore-btn:hover ~ .hero-video,
-.hero-video-section:has(.explore-btn:hover) .hero-video {
-    filter: brightness(0.55) contrast(1.1);
+.lux-btn-arrow {
+    font-size: 1rem;
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.lux-btn:hover .lux-btn-arrow {
+    transform: translateX(5px);
+}
+
+/* -----------------------------------------
+   Reveal on scroll
+-------------------------------------------- */
+.reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.reveal.is-visible {
+    opacity: 1;
+    transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
 }
 
 /* -----------------------------------------
@@ -226,55 +281,29 @@
     max-width: 480px;
 }
 
-.magazine-hero .hero-text-side .explore-btn {
-    padding: 14px 36px;
-    background: transparent;
-    border: 1px solid #2C2520;
-    color: #2C2520;
-    cursor: pointer;
-    font-size: 0.75rem;
-    letter-spacing: 3px;
-    transition: all 0.35s ease;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-.magazine-hero .hero-text-side .explore-btn:hover {
-    background: #2C2C2C;
-    color: #FFFFFF;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(44, 44, 44, 0.15);
-}
-
+/* תמונה נקייה עם מסגרת זהב דקה אחת שמרחפת סביבה */
 .hero-image-side {
     width: 100%;
-    max-width: 550px;
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
-    background-color: #fff;
-    border: 1px solid #EAE3D9;
-    position: relative;
-    aspect-ratio: 3 / 4;
-    padding: 15px;
+    padding: 18px;
     box-sizing: border-box;
 }
 
 .hero-main-img {
     display: block;
     width: 100%;
-    max-width: 80%;
+    max-width: 420px;
     height: auto;
-    object-fit: contain;
-    border-radius: 2px;
-    box-shadow: 0 0 0 1px #D4AF37, 0 15px 35px rgba(44, 37, 32, 0.08);
-    padding: 25px;
-    background-color: transparent;
+    outline: 1px solid #C9A961;
+    outline-offset: 14px;
+    box-shadow: 0 25px 50px rgba(44, 37, 32, 0.12);
+    transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .hero-image-side:hover .hero-main-img {
-    transform: scale(1.02);
+    transform: scale(1.015);
 }
 
 /* -----------------------------------------
@@ -426,6 +455,7 @@
 
 .trio-img-card {
     flex: 1;
+    min-width: 0;
     aspect-ratio: 9 / 16;
     max-height: 650px;
     overflow: hidden;
@@ -466,32 +496,8 @@
     margin: 0;
     color: #2C2520;
     text-transform: uppercase;
-    line-height: 1.2;
-}
-
-.row-text-side .discover-btn {
-    background: transparent;
-    border: 1px solid #2C2520;
-    color: #2C2520;
-    padding: 14px 32px;
-    font-size: 0.65rem;
-    font-family: 'Assistant', 'Segoe UI', sans-serif;
-    font-weight: 600;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-}
-
-.row-text-side .discover-btn:hover {
-    background: #2C2520;
-    color: #FFFFFF;
-    border-color: #2C2520;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(44, 37, 32, 0.15);
+    line-height: 1.3;
+    overflow-wrap: break-word;
 }
 
 /* -----------------------------------------
@@ -501,8 +507,8 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 60px 8%;
-    background-color: transparent;
+    padding: 85px 8%;
+    background-color: #F4EFEA;
     border-top: 1px solid #EAE3D9;
     border-bottom: 1px solid #EAE3D9;
     margin: 30px 0;
@@ -516,24 +522,25 @@
 }
 
 .value-item h4 {
-    font-size: 0.9rem;
-    letter-spacing: 4px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    letter-spacing: 5px;
     color: #2C2520;
-    margin: 0 0 8px 0;
-    font-weight: 600;
+    margin: 0 0 14px 0;
+    font-weight: 400;
     text-transform: uppercase;
 }
 
 .value-item p {
-    font-size: 0.85rem;
-    color: #6C6259;
+    font-size: 1.05rem;
+    color: #5A524A;
     margin: 0;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 .value-divider-line {
     width: 1px;
-    height: 40px;
+    height: 60px;
     background: linear-gradient(to bottom, transparent, #D5C8B8, transparent);
 }
 
@@ -573,25 +580,8 @@
 -------------------------------------------- */
 .home-cta-footer {
     text-align: center;
-    padding: 30px 0 70px 0;
+    padding: 30px 0 80px 0;
     background-color: #FAF8F5;
-}
-
-.editorial-cta-btn {
-    background: transparent;
-    border: none;
-    color: #8C7E72;
-    font-size: 1.1rem;
-    font-weight: 600;
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: all 0.35s ease;
-    font-family: 'Playfair Display', serif;
-}
-
-.editorial-cta-btn:hover {
-    color: #2C2C2C;
-    transform: translateX(-6px);
 }
 
 /* -----------------------------------------
@@ -615,21 +605,9 @@
         text-align: center;
     }
 
-    .magazine-hero .hero-image-side {
-        width: 100%;
-        max-width: 320px;
-        margin: 0 auto;
-        padding: 10px;
-    }
-
     .magazine-hero .hero-main-img {
-        width: 100%;
-        max-width: 100%;
-        padding: 10px;
-    }
-
-    .hero-main-img {
-        max-width: 320px;
+        max-width: 300px;
+        outline-offset: 10px;
     }
 
     .vertical-videos-section {
